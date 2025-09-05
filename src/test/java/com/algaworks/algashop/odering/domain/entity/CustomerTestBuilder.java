@@ -1,0 +1,67 @@
+package com.algaworks.algashop.odering.domain.entity;
+
+import com.algaworks.algashop.odering.domain.valueobject.*;
+
+import java.time.Instant;
+import java.time.LocalDate;
+
+public class CustomerTestBuilder {
+    private CustomerTestBuilder() {
+
+    }
+
+    public static Customer.BrandNewCustomerBuilder brandNewCustomerBuilder() {
+        return Customer.brandNewBuilder()
+                .fullName(new FullName("john", "doe"))
+                .birthDate(new BirthDate(LocalDate.of(2000, 1, 1)))
+                .email(new Email("john.doe@email.com"))
+                .phone(new Phone("478-256-25024"))
+                .document(new Document("255-08-0578"))
+                .promotionNotificationsAllowed(true)
+                .address(getValidNewAddress());
+    }
+
+    public static Customer.ExistingCustomerBuilder existingCustomerBuilder() {
+        return Customer.existingBuilder()
+                .id(new CustomerId())
+                .fullName(new FullName("john", "doe"))
+                .birthDate(new BirthDate(LocalDate.of(2000, 1, 1)))
+                .email(new Email("john.doe@email.com"))
+                .phone(new Phone("123-456-7890"))
+                .document(new Document("123-45-6789"))
+                .promotionNotificationsAllowed(true)
+                .archived(false)
+                .registeredAt(Instant.now())
+                .archivedAt(Instant.now())
+                .loyaltyPoints(new LoyaltyPoints(10))
+                .address(getValidNewAddress());
+    }
+
+    public static Customer.ExistingCustomerBuilder existingAnonymizedCustomerBuilder() {
+        return Customer.existingBuilder()
+                .id(new CustomerId())
+                .fullName(new FullName("anonymous", "anonymous"))
+                .birthDate(new BirthDate(LocalDate.of(2000, 1, 1)))
+                .email(new Email("anonymous@email.com"))
+                .phone(new Phone("000-000-0000"))
+                .document(new Document("000-00-0000"))
+                .promotionNotificationsAllowed(false)
+                .archived(true)
+                .registeredAt(Instant.now())
+                .archivedAt(Instant.now())
+                .loyaltyPoints(LoyaltyPoints.ZERO)
+                .address(getValidNewAddress());
+    }
+
+    private static Address getValidNewAddress() {
+        return Address.builder()
+                .street("street")
+                .additionalInfo("additionalInfo")
+                .neighborhood("neighborhood")
+                .city("city")
+                .state("state")
+                .zipcode(Zipcode.builder().value("12345").build())
+                .build();
+    }
+
+}
