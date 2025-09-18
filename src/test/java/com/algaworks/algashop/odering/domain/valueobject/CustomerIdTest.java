@@ -1,12 +1,12 @@
 package com.algaworks.algashop.odering.domain.valueobject;
 
+import com.algaworks.algashop.odering.domain.valueobject.id.CustomerId;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerIdTest {
 

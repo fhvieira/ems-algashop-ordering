@@ -1,71 +1,322 @@
 package com.algaworks.algashop.odering.domain.entity;
 
+import com.algaworks.algashop.odering.domain.exceptions.InvalidOrderDeliveryDateException;
+import com.algaworks.algashop.odering.domain.exceptions.OrderCannotBePlacedException;
+import com.algaworks.algashop.odering.domain.exceptions.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.odering.domain.valueobject.*;
+import com.algaworks.algashop.odering.domain.valueobject.id.CustomerId;
+import com.algaworks.algashop.odering.domain.valueobject.id.OrderId;
+import com.algaworks.algashop.odering.domain.valueobject.id.ProductId;
+import lombok.Builder;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Order {
     private OrderId id;
+    private CustomerId customerId;
     private Money totalAmount;
-    private Money shippingCost;
-    private Integer quantity;
+    private Quantity totalItems;
     private OffsetDateTime placedAt;
     private OffsetDateTime paidAt;
     private OffsetDateTime canceledAt;
     private OffsetDateTime readyAt;
-    private LocalDate expectedDeliveryDate;
-    private CustomerId customerId;
+    private BillingInfo billingInfo;
+    private ShippingInfo shippingInfo;
+    private OrderStatus status;
     private PaymentMethod paymentMethod;
-    private OrderStatus orderStatus;
-    private List<OrderItem> items;
+    private Money shippingCost;
+    private LocalDate expectedDeliveryDate;
+    private Set<OrderItem> items;
 
-    private void markAsPaid() {
-
+    @Builder(builderClassName = "ExistingOrderBuilder", builderMethodName = "existingBuilder")
+    public Order(OrderId id, CustomerId customerId, Money totalAmount, Quantity totalItems, OffsetDateTime placedAt,
+                 OffsetDateTime paidAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, BillingInfo billingInfo,
+                 ShippingInfo shippingInfo, OrderStatus status, PaymentMethod paymentMethod, Money shippingCost,
+                 LocalDate expectedDeliveryDate, Set<OrderItem> items) {
+        this.setId(id);
+        this.setCustomerId(customerId);
+        this.setTotalAmount(totalAmount);
+        this.setTotalItems(totalItems);
+        this.setPlacedAt(placedAt);
+        this.setPaidAt(paidAt);
+        this.setCanceledAt(canceledAt);
+        this.setReadyAt(readyAt);
+        this.setBillingInfo(billingInfo);
+        this.setShippingInfo(shippingInfo);
+        this.setStatus(status);
+        this.setPaymentMethod(paymentMethod);
+        this.setShippingCost(shippingCost);
+        this.setExpectedDeliveryDate(expectedDeliveryDate);
+        this.setItems(items);
     }
 
-    private void markAsReady() {
+    public static Order draft(CustomerId customerId) {
+        return new Order(
+                new OrderId(),
+                customerId,
+                Money.ZERO,
+                Quantity.ZERO,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                OrderStatus.DRAFT,
+                null,
+                null,
+                null,
+                new HashSet<>()
+        );
+    }
 
+    public void addItem(ProductId productId, ProductName productName, Money price, Quantity quantity) {
+        this.items.add(OrderItem.brandNewBuilder()
+                .orderId(this.id())
+                .productId(productId)
+                .productName(productName)
+                .price(price)
+                .quantity(quantity)
+                .build()
+        );
+        calculateTotals();
+    }
+
+    public void changePaymentMothod(PaymentMethod newPaymentMethod) {
+        Objects.requireNonNull(newPaymentMethod);
+        setPaymentMethod(newPaymentMethod);
+    }
+
+    public void changeBillingInfo(BillingInfo newBillingInfo) {
+        Objects.requireNonNull(newBillingInfo);
+        setBillingInfo(newBillingInfo);
+    }
+
+    public void changeShippingInfo(ShippingInfo newShippingInfo, Money newShippingCost, LocalDate newExpectedDeliveryDate) {
+        Objects.requireNonNull(newShippingInfo);
+        Objects.requireNonNull(newShippingCost);
+        Objects.requireNonNull(newExpectedDeliveryDate);
+
+        if (newExpectedDeliveryDate.isBefore(LocalDate.now())) {
+            throw new InvalidOrderDeliveryDateException(this.id());
+        }
+
+        setShippingInfo(newShippingInfo);
+        setShippingCost(newShippingCost);
+        setExpectedDeliveryDate(newExpectedDeliveryDate);
     }
 
     public void place() {
+        this.canChangeToPlaced();
+        this.changeStatus(OrderStatus.PLACED);
+        setPlacedAt(OffsetDateTime.now());
+    }
 
+    public void markAsPaid() {
+        this.setPaidAt(OffsetDateTime.now());
+        this.changeStatus(OrderStatus.PAID);
+    }
+
+    private void changeStatus(OrderStatus newStatus) {
+        Objects.requireNonNull(newStatus);
+        if (status.canNotChangeTo(newStatus)) {
+            throw new OrderStatusCannotBeChangedException(this.id(), this.status(), newStatus);
+        }
+        this.setStatus(newStatus);
+    }
+
+    private void calculateTotals() {
+         this.items().stream()
+                .map(OrderItem::totalAmount)
+                .reduce(Money::add)
+                .ifPresent(this::setTotalAmount);
+        this.items().stream()
+                .map(OrderItem::quantity)
+                .reduce(Quantity::add)
+                .ifPresent(this::setTotalItems);
+
+        if (this.shippingCost() != null) {
+            this.totalAmount.add(this.shippingCost());
+        }
     }
 
     public Boolean isPaid() {
-        return false;
+        return OrderStatus.PAID.equals(this.status());
     }
 
     public Boolean isCanceled() {
-        return false;
+        return OrderStatus.CANCELED.equals(this.status());
     }
 
     public Boolean isReady() {
-        return false;
+        return OrderStatus.READY.equals(this.status());
     }
 
     public Boolean isDraft() {
-        return false;
+        return OrderStatus.READY.equals(this.status());
     }
 
     public Boolean isPlaced() {
-        return false;
+        return OrderStatus.PLACED.equals(this.status());
     }
 
-    public void addItem(Integer productId, ProductName ProductName, Money price, Integer quantity) {
-
+    public OrderId id() {
+        return id;
     }
 
-    public void changeItemQuantity(OrderItemId orderItemId, Integer quantity) {
-
+    public CustomerId customerId() {
+        return customerId;
     }
 
-    public void removeItem(OrderItemId orderItemId) {
-
+    public Money totalAmount() {
+        return totalAmount;
     }
 
-    public void changePaymentMethod(PaymentMethod paymentMethod) {
+    public Quantity totalItems() {
+        return totalItems;
+    }
 
+    public OffsetDateTime placedAt() {
+        return placedAt;
+    }
+
+    public OffsetDateTime paidAt() {
+        return paidAt;
+    }
+
+    public OffsetDateTime canceledAt() {
+        return canceledAt;
+    }
+
+    public OffsetDateTime readyAt() {
+        return readyAt;
+    }
+
+    public BillingInfo billingInfo() {
+        return billingInfo;
+    }
+
+    public ShippingInfo shippingInfo() {
+        return shippingInfo;
+    }
+
+    public OrderStatus status() {
+        return status;
+    }
+
+    public PaymentMethod paymentMethod() {
+        return paymentMethod;
+    }
+
+    public Money shippingCost() {
+        return shippingCost;
+    }
+
+    public LocalDate expectedDeliveryDate() {
+        return expectedDeliveryDate;
+    }
+
+    public Set<OrderItem> items() {
+        return Collections.unmodifiableSet(this.items);
+    }
+
+    private void setId(OrderId id) {
+        Objects.requireNonNull(id);
+        this.id = id;
+    }
+
+    private void setCustomerId(CustomerId customerId) {
+        Objects.requireNonNull(customerId);
+        this.customerId = customerId;
+    }
+
+    private void setTotalAmount(Money totalAmount) {
+        Objects.requireNonNull(totalAmount);
+        this.totalAmount = totalAmount;
+    }
+
+    private void setTotalItems(Quantity totalItems) {
+        Objects.requireNonNull(totalItems);
+        this.totalItems = totalItems;
+    }
+
+    private void setPlacedAt(OffsetDateTime placedAt) {
+        this.placedAt = placedAt;
+    }
+
+    private void setPaidAt(OffsetDateTime paidAt) {
+        this.paidAt = paidAt;
+    }
+
+    private void setCanceledAt(OffsetDateTime canceledAt) {
+        this.canceledAt = canceledAt;
+    }
+
+    private void setReadyAt(OffsetDateTime readyAt) {
+        this.readyAt = readyAt;
+    }
+
+    private void setBillingInfo(BillingInfo billingInfo) {
+        this.billingInfo = billingInfo;
+    }
+
+    private void setShippingInfo(ShippingInfo shippingInfo) {
+        this.shippingInfo = shippingInfo;
+    }
+
+    private void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    private void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    private void setShippingCost(Money shippingCost) {
+        this.shippingCost = shippingCost;
+    }
+
+    private void setExpectedDeliveryDate(LocalDate expectedDeliveryDate) {
+        this.expectedDeliveryDate = expectedDeliveryDate;
+    }
+
+    private void setItems(Set<OrderItem> items) {
+        Objects.requireNonNull(items);
+        this.items = items;
+    }
+
+    private void canChangeToPlaced() {
+        if (this.shippingCost() == null) {
+            throw OrderCannotBePlacedException.noShippingCost(this.id());
+        }
+        if (this.billingInfo() == null) {
+            throw OrderCannotBePlacedException.noBillingInfo(this.id());
+        }
+        if (this.expectedDeliveryDate() == null) {
+            throw OrderCannotBePlacedException.noExpectedDeliveryDate(this.id());
+        }
+        if (this.paymentMethod() == null) {
+            throw OrderCannotBePlacedException.noPaymentMethod(this.id());
+        }
+        if (items == null || items().isEmpty()) {
+            throw OrderCannotBePlacedException.noItems(this.id());
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

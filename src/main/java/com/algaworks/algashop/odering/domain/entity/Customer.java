@@ -2,6 +2,7 @@ package com.algaworks.algashop.odering.domain.entity;
 
 import com.algaworks.algashop.odering.domain.exceptions.CustomerArchivedException;
 import com.algaworks.algashop.odering.domain.valueobject.*;
+import com.algaworks.algashop.odering.domain.valueobject.id.CustomerId;
 import lombok.Builder;
 
 import java.time.Instant;

@@ -12,14 +12,14 @@ class CustomerTest {
     @Test
     void givenAnInvalidEmail_whenTryingToCreateCustomer_shouldGenerateException() {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> CustomerTestBuilder.brandNewCustomerBuilder()
+                .isThrownBy(() -> CustomerTestDataBuilder.brandNewCustomerBuilder()
                         .email(new Email("john.doe_email.com"))
                         .build());
     }
 
     @Test
     void givenAnInvalidEmail_whenTryingToChangeCustomerEmail_shouldGenerateException() {
-        Customer customer = CustomerTestBuilder.brandNewCustomerBuilder().build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomerBuilder().build();
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> customer.changeEmail(new Email("john.doe_email.com")));
@@ -27,7 +27,7 @@ class CustomerTest {
 
     @Test
     void givenValidCustomer_whenAddingNonPositiveLoyaltyPoints_shouldGenerateException() {
-        Customer customer = CustomerTestBuilder.brandNewCustomerBuilder().build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomerBuilder().build();
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> customer.addLoyaltyPoints(new LoyaltyPoints(0)));
@@ -39,14 +39,14 @@ class CustomerTest {
     @Test
     void givenValidCustomer_whenAddingLoyaltyPoints_shouldOnlyAdd() {
         LoyaltyPoints pointsToBeAdded = new LoyaltyPoints(10);
-        Customer customer = CustomerTestBuilder.brandNewCustomerBuilder().build();
+        Customer customer = CustomerTestDataBuilder.brandNewCustomerBuilder().build();
         customer.addLoyaltyPoints(pointsToBeAdded);
         assertEquals(pointsToBeAdded, customer.loyaltyPoints());
     }
 
     @Test
     void givenNonArchivedCustomer_whenArchiving_shouldAnonymize() {
-        Customer customer = CustomerTestBuilder.existingCustomerBuilder().build();
+        Customer customer = CustomerTestDataBuilder.existingCustomerBuilder().build();
         customer.archive();
         assertWith(customer,
                 c -> assertEquals(new FullName("anonymous", "anonymous"), c.fullName()),
@@ -61,7 +61,7 @@ class CustomerTest {
 
     @Test
     void givenArchivedCustomer_whenTryingToUpdate_shouldThrowException() {
-        Customer customer = CustomerTestBuilder.existingAnonymizedCustomerBuilder().build();
+        Customer customer = CustomerTestDataBuilder.existingAnonymizedCustomerBuilder().build();
 
         assertThatExceptionOfType(CustomerArchivedException.class)
                 .isThrownBy(customer::archive);
