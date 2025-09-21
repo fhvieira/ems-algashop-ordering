@@ -13,18 +13,18 @@ public class OrderItem {
     private OrderId orderId;
     private ProductId productId;
     private ProductName productName;
-    private Money price;
+    private Money productPrice;
     private Quantity quantity;
     private Money totalAmount;
 
     @Builder(builderClassName = "ExistingOrderItemBuilder", builderMethodName = "existingBuilder")
     public OrderItem(OrderItemId id, OrderId orderId, ProductId productId, ProductName productName,
-                     Money price,Quantity quantity, Money totalAmount) {
+                     Money productPrice, Quantity quantity, Money totalAmount) {
         setId(id);
         setOrderId(orderId);
         setProductId(productId);
         setProductName(productName);
-        setPrice(price);
+        setProductPrice(productPrice);
         setQuantity(quantity);
         setTotalAmount(totalAmount);
     }
@@ -60,8 +60,13 @@ public class OrderItem {
         return productName;
     }
 
+    void changeQuantity(Quantity quantity) {
+        this.setQuantity(quantity);
+        this.calculateTotal();
+    }
+
     public Money price() {
-        return price;
+        return productPrice;
     }
 
     public Quantity quantity() {
@@ -91,9 +96,9 @@ public class OrderItem {
         this.productName = productName;
     }
 
-    private void setPrice(Money price) {
-        Objects.requireNonNull(price);
-        this.price = price;
+    private void setProductPrice(Money productPrice) {
+        Objects.requireNonNull(productPrice);
+        this.productPrice = productPrice;
     }
 
     private void setQuantity(Quantity quantity) {

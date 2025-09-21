@@ -2,10 +2,12 @@ package com.algaworks.algashop.odering.domain.entity;
 
 import com.algaworks.algashop.odering.domain.exceptions.InvalidOrderDeliveryDateException;
 import com.algaworks.algashop.odering.domain.exceptions.OrderCannotBePlacedException;
+import com.algaworks.algashop.odering.domain.exceptions.OrderItemDoesNotExistException;
 import com.algaworks.algashop.odering.domain.exceptions.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.odering.domain.valueobject.*;
 import com.algaworks.algashop.odering.domain.valueobject.id.CustomerId;
 import com.algaworks.algashop.odering.domain.valueobject.id.OrderId;
+import com.algaworks.algashop.odering.domain.valueobject.id.OrderItemId;
 import com.algaworks.algashop.odering.domain.valueobject.id.ProductId;
 import lombok.Builder;
 
@@ -85,6 +87,19 @@ public class Order {
                 .build()
         );
         calculateTotals();
+    }
+
+    public void changeItemQuantity(OrderItemId itemId, Quantity quantity) {
+        Objects.requireNonNull(itemId);
+        Objects.requireNonNull(quantity);
+
+        OrderItem item = items().stream()
+                .filter(it -> it.id().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new OrderItemDoesNotExistException(this.id(), itemId));
+
+        item.changeQuantity(quantity);
+        this.calculateTotals();
     }
 
     public void changePaymentMothod(PaymentMethod newPaymentMethod) {

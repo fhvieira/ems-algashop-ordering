@@ -21,4 +21,7 @@ public class ErrorMessages {
     public static final String ORDER_CANNOT_BE_PLACED_HAS_NO_SHIPPING = "Order with no shipping cost info cannot be placed";
     public static final String ORDER_CANNOT_BE_PLACED_HAS_NO_PAYMENT_METHOD = "Order with no payment method cannot be placed";
     public static final String ORDER_CANNOT_BE_PLACED_HAS_NO_DELIVERY_DATE = "Order with no expected delivery date cannot be placed";
+
+    public static final String ORDER_ITEM_DOES_NOT_EXIST = "Order item {} does not exist for Order {}";
+
 }

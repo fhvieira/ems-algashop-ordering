@@ -141,4 +141,24 @@ class OrderTest {
                         LocalDate.now().minusDays(1)));
     }
 
+    @Test
+    void shouldChangeOrderItemQuantityAndRecalculate() {
+        Order order = Order.draft(new CustomerId());
+
+        order.addItem(
+                new ProductId(),
+                new ProductName("product name"),
+                new Money("10"),
+                new Quantity(3)
+        );
+
+        OrderItem item = order.items().iterator().next();
+        order.changeItemQuantity(item.id(), new Quantity(5));
+
+        assertWith(order,
+                (it) -> assertThat(it.totalItems()).isEqualTo(new Quantity(5)),
+                (it) -> assertThat(it.totalAmount()).isEqualTo(new Money("50"))
+        );
+    }
+
 }
