@@ -24,4 +24,5 @@ public class ErrorMessages {
 
     public static final String ORDER_ITEM_DOES_NOT_EXIST = "Order item {} does not exist for Order {}";
 
+    public static final String PRODUCT_OUT_OF_STOCK = "Product {} is out of stock";
 }
