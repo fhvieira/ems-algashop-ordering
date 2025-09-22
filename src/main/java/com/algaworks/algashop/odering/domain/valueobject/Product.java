@@ -1,11 +1,21 @@
 package com.algaworks.algashop.odering.domain.valueobject;
 
 import com.algaworks.algashop.odering.domain.valueobject.id.ProductId;
+import lombok.Builder;
 
+import java.util.Objects;
+
+@Builder
 public record Product(
         ProductId id,
-        String name,
+        ProductName name,
         Money price,
         Boolean inStock
 ) {
+    public Product {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(price);
+        Objects.requireNonNull(inStock);
+    }
 }

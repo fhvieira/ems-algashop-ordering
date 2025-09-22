@@ -21,20 +21,18 @@ class OrderTest {
 
     @Test
     void shouldAddItem() {
-        ProductId productId = new ProductId();
-        ProductName productName = new ProductName("product name");
-        Money price = new Money("100");
-        Quantity quantity = new Quantity(1);
+        Product product = ProductTestDataBuilder.aProduct().build();
+        Quantity quantity = new Quantity(3);
 
         Order order = Order.draft(new CustomerId());
-        order.addItem(productId, productName, price, quantity);
+        order.addItem(product, quantity);
 
         assertThat(order.items().size()).isEqualTo(1);
         assertWith(order.items().iterator().next(),
                 (i) -> assertThat(i.id()).isNotNull(),
-                (i) -> assertThat(i.productName()).isEqualTo(productName),
-                (i) -> assertThat(i.productId()).isEqualTo(productId),
-                (i) -> assertThat(i.price()).isEqualTo(price),
+                (i) -> assertThat(i.productName()).isEqualTo(product.name()),
+                (i) -> assertThat(i.productId()).isEqualTo(product.id()),
+                (i) -> assertThat(i.price()).isEqualTo(product.price()),
                 (i) -> assertThat(i.quantity()).isEqualTo(quantity));
     }
 
@@ -48,14 +46,11 @@ class OrderTest {
 
     @Test
     void shouldCalculateTotals() {
-        ProductId productId = new ProductId();
-        ProductName productName = new ProductName("product name");
-        Money price = new Money("100");
-        Quantity quantity = new Quantity(3);
+        Product product = ProductTestDataBuilder.aProduct().build();
 
         Order order = Order.draft(new CustomerId());
-        order.addItem(productId, productName, price, quantity);
-        order.addItem(productId, productName, price, quantity);
+        order.addItem(product, new Quantity(3));
+        order.addItem(product, new Quantity(3));
 
         assertThat(order.items().size()).isEqualTo(2);
         assertWith(order.totalAmount()).isEqualTo(new Money("600"));
@@ -144,13 +139,11 @@ class OrderTest {
     @Test
     void shouldChangeOrderItemQuantityAndRecalculate() {
         Order order = Order.draft(new CustomerId());
+        Product product = ProductTestDataBuilder.aProduct()
+                .price(new Money("10"))
+                .build();
 
-        order.addItem(
-                new ProductId(),
-                new ProductName("product name"),
-                new Money("10"),
-                new Quantity(3)
-        );
+        order.addItem(product, new Quantity(3));
 
         OrderItem item = order.items().iterator().next();
         order.changeItemQuantity(item.id(), new Quantity(5));

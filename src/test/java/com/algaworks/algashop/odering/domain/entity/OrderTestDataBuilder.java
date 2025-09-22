@@ -100,11 +100,8 @@ public class OrderTestDataBuilder {
         order.changeShippingInfo(this.shippingInfo, shippingCost, expectedDeliveryDate);
 
         if (withItems) {
-            order.addItem(new ProductId(IdGenerator.generateTimeBasedUUID()), new ProductName("product name"),
-                    new Money("100"), new Quantity(1));
-
-            order.addItem(new ProductId(IdGenerator.generateTimeBasedUUID()), new ProductName("new product name"),
-                    new Money("200"), new Quantity(2));
+            order.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(1));
+            order.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(2));
         }
 
         switch (this.status) {

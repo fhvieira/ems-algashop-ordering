@@ -30,14 +30,13 @@ public class OrderItem {
     }
 
     @Builder(builderClassName = "BrandNewOrderItem", builderMethodName = "brandNewBuilder")
-    private static OrderItem brandNew(OrderId orderId, ProductId productId, ProductName productName,
-                     Money price, Quantity quantity) {
+    private static OrderItem brandNew(OrderId orderId, Product product, Quantity quantity) {
         OrderItem orderItem = new OrderItem(
                 new OrderItemId(),
                 orderId,
-                productId,
-                productName,
-                price,
+                product.id(),
+                product.name(),
+                product.price(),
                 quantity,
                 Money.ZERO);
         orderItem.calculateTotal();
