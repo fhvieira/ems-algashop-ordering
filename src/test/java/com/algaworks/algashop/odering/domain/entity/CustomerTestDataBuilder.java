@@ -19,7 +19,7 @@ public class CustomerTestDataBuilder {
                 .phone(new Phone("478-256-25024"))
                 .document(new Document("255-08-0578"))
                 .promotionNotificationsAllowed(true)
-                .address(getValidNewAddress());
+                .address(anValidNewAddress());
     }
 
     public static Customer.ExistingCustomerBuilder existingCustomerBuilder() {
@@ -35,7 +35,7 @@ public class CustomerTestDataBuilder {
                 .registeredAt(Instant.now())
                 .archivedAt(Instant.now())
                 .loyaltyPoints(new LoyaltyPoints(10))
-                .address(getValidNewAddress());
+                .address(anValidNewAddress());
     }
 
     public static Customer.ExistingCustomerBuilder existingAnonymizedCustomerBuilder() {
@@ -51,10 +51,10 @@ public class CustomerTestDataBuilder {
                 .registeredAt(Instant.now())
                 .archivedAt(Instant.now())
                 .loyaltyPoints(LoyaltyPoints.ZERO)
-                .address(getValidNewAddress());
+                .address(anValidNewAddress());
     }
 
-    private static Address getValidNewAddress() {
+    private static Address anValidNewAddress() {
         return Address.builder()
                 .street("street")
                 .additionalInfo("additionalInfo")

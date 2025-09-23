@@ -1,19 +1,15 @@
 package com.algaworks.algashop.odering.domain.entity;
 
-import com.algaworks.algashop.odering.domain.utility.IdGenerator;
 import com.algaworks.algashop.odering.domain.valueobject.*;
 import com.algaworks.algashop.odering.domain.valueobject.id.CustomerId;
-import com.algaworks.algashop.odering.domain.valueobject.id.ProductId;
 
 import java.time.LocalDate;
 
 public class OrderTestDataBuilder {
     private CustomerId customerId = new CustomerId();
     private PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
-    private BillingInfo billingInfo = getBillingInfo();
-    private ShippingInfo shippingInfo = getShippingInfo();
-    private Money shippingCost = new Money("100");
-    private LocalDate expectedDeliveryDate = LocalDate.now().plusWeeks(1);
+    private BillingInfo billingInfo = OrderTestDataBuilder.aBillingInfo();
+    private Shipping shipping = OrderTestDataBuilder.aShipping();
     private boolean withItems = true;
     private OrderStatus status = OrderStatus.DRAFT;
 
@@ -40,18 +36,8 @@ public class OrderTestDataBuilder {
         return this;
     }
 
-    public OrderTestDataBuilder shippingInfo(ShippingInfo shippingInfo) {
-        this.shippingInfo = shippingInfo;
-        return this;
-    }
-
-    public OrderTestDataBuilder shippingCost(Money shippingCost) {
-        this.shippingCost = shippingCost;
-        return this;
-    }
-
-    public OrderTestDataBuilder expectedDeliveryDate(LocalDate expectedDeliveryDate) {
-        this.expectedDeliveryDate = expectedDeliveryDate;
+    public OrderTestDataBuilder shippingInfo(Shipping shipping) {
+        this.shipping = shipping;
         return this;
     }
 
@@ -65,7 +51,7 @@ public class OrderTestDataBuilder {
         return this;
     }
 
-    public static Address getAddres() {
+    public static Address anAddress() {
         return Address.builder()
                 .street("street name")
                 .state("state name")
@@ -75,29 +61,36 @@ public class OrderTestDataBuilder {
                 .build();
     }
 
-    public static BillingInfo getBillingInfo() {
+    public static BillingInfo aBillingInfo() {
         return BillingInfo.builder()
                 .fullName(new FullName("john", "doe"))
                 .phone(new Phone("123-456-7890"))
                 .document(new Document("12345678912"))
-                .address(getAddres())
+                .address(anAddress())
                 .build();
     }
 
-    public static ShippingInfo getShippingInfo() {
-        return ShippingInfo.builder()
+    public static Shipping aShipping() {
+        Recipient recipient = Recipient.builder()
                 .fullName(new FullName("john", "doe"))
                 .document(new Document("12345678912"))
                 .phone(new Phone("123-456-7890"))
-                .address(getAddres())
+                .build();
+
+        return Shipping.builder()
+                .cost(new Money("10"))
+                .expectedDate(LocalDate.now().plusDays(2))
+                .recipient(recipient)
+                .address(anAddress())
                 .build();
     }
 
     public Order build() {
         Order order = Order.draft(customerId);
+
         order.changePaymentMothod(this.paymentMethod);
         order.changeBillingInfo(this.billingInfo);
-        order.changeShippingInfo(this.shippingInfo, shippingCost, expectedDeliveryDate);
+        order.changeShipping(this.shipping);
 
         if (withItems) {
             order.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(1));

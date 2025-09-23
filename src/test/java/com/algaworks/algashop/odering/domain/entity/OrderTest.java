@@ -5,7 +5,6 @@ import com.algaworks.algashop.odering.domain.exceptions.OrderStatusCannotBeChang
 import com.algaworks.algashop.odering.domain.exceptions.ProductOutOfStockException;
 import com.algaworks.algashop.odering.domain.valueobject.*;
 import com.algaworks.algashop.odering.domain.valueobject.id.CustomerId;
-import com.algaworks.algashop.odering.domain.valueobject.id.ProductId;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Test;
 
@@ -108,7 +107,7 @@ class OrderTest {
 
     @Test
     void shouldChangeBillingInfo() {
-        BillingInfo billingInfo = OrderTestDataBuilder.getBillingInfo();
+        BillingInfo billingInfo = OrderTestDataBuilder.aBillingInfo();
         Order order = OrderTestDataBuilder.brandNewBuilder()
                 .billingInfo(billingInfo)
                 .build();
@@ -116,26 +115,25 @@ class OrderTest {
     }
 
     @Test
-    void shouldChangeShippingInfo() {
+    void shouldChangeShipping() {
         Order order = Order.draft(new CustomerId());
-        ShippingInfo shippingInfo = OrderTestDataBuilder.getShippingInfo();
+        Shipping shipping = OrderTestDataBuilder.aShipping();
 
-        order.changeShippingInfo(shippingInfo, new Money("100"), LocalDate.now());
+        order.changeShipping(shipping);
 
-        assertThat(order.shippingInfo()).isEqualTo(shippingInfo);
+        assertThat(order.shipping()).isEqualTo(shipping);
     }
 
     @Test
     void shouldFailToChangeDeliveryDateInThePast() {
         Order order = Order.draft(new CustomerId());
 
-        ShippingInfo shippingInfo = OrderTestDataBuilder.getShippingInfo();
+        Shipping newShipping = OrderTestDataBuilder.aShipping().toBuilder()
+                .expectedDate(LocalDate.now().minusDays(3))
+                .build();
 
         assertThatExceptionOfType(InvalidOrderDeliveryDateException.class)
-                .isThrownBy(() -> order.changeShippingInfo(
-                        shippingInfo,
-                        new Money("100"),
-                        LocalDate.now().minusDays(1)));
+                .isThrownBy(() -> order.changeShipping(newShipping));
     }
 
     @Test
