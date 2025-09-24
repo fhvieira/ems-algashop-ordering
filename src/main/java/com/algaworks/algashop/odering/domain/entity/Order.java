@@ -97,7 +97,7 @@ public class Order {
         this.calculateTotals();
     }
 
-    public void changePaymentMothod(PaymentMethod newPaymentMethod) {
+    public void changePaymentMethod(PaymentMethod newPaymentMethod) {
         Objects.requireNonNull(newPaymentMethod);
         setPaymentMethod(newPaymentMethod);
     }
@@ -170,7 +170,7 @@ public class Order {
     }
 
     public Boolean isDraft() {
-        return OrderStatus.READY.equals(this.status());
+        return OrderStatus.DRAFT.equals(this.status());
     }
 
     public Boolean isPlaced() {

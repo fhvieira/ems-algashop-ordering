@@ -89,7 +89,7 @@ public class OrderTestDataBuilder {
     public Order build() {
         Order order = Order.draft(customerId);
 
-        order.changePaymentMothod(this.paymentMethod);
+        order.changePaymentMethod(this.paymentMethod);
         order.changeBilling(this.billing);
         order.changeShipping(this.shipping);
 
