@@ -106,12 +106,12 @@ class OrderTest {
     }
 
     @Test
-    void shouldChangeBillingInfo() {
-        BillingInfo billingInfo = OrderTestDataBuilder.aBillingInfo();
+    void shouldChangeBilling() {
+        Billing billing = OrderTestDataBuilder.aBilling();
         Order order = OrderTestDataBuilder.brandNewBuilder()
-                .billingInfo(billingInfo)
+                .billing(billing)
                 .build();
-        assertThat(order.billingInfo()).isEqualTo(billingInfo);
+        assertThat(order.billing()).isEqualTo(billing);
     }
 
     @Test

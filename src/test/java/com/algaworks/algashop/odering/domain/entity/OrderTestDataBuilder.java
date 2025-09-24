@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class OrderTestDataBuilder {
     private CustomerId customerId = new CustomerId();
     private PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
-    private BillingInfo billingInfo = OrderTestDataBuilder.aBillingInfo();
+    private Billing billing = OrderTestDataBuilder.aBilling();
     private Shipping shipping = OrderTestDataBuilder.aShipping();
     private boolean withItems = true;
     private OrderStatus status = OrderStatus.DRAFT;
@@ -31,12 +31,12 @@ public class OrderTestDataBuilder {
         return this;
     }
 
-    public OrderTestDataBuilder billingInfo(BillingInfo billingInfo) {
-        this.billingInfo = billingInfo;
+    public OrderTestDataBuilder billing(Billing billing) {
+        this.billing = billing;
         return this;
     }
 
-    public OrderTestDataBuilder shippingInfo(Shipping shipping) {
+    public OrderTestDataBuilder shipping(Shipping shipping) {
         this.shipping = shipping;
         return this;
     }
@@ -61,11 +61,12 @@ public class OrderTestDataBuilder {
                 .build();
     }
 
-    public static BillingInfo aBillingInfo() {
-        return BillingInfo.builder()
+    public static Billing aBilling() {
+        return Billing.builder()
                 .fullName(new FullName("john", "doe"))
                 .phone(new Phone("123-456-7890"))
                 .document(new Document("12345678912"))
+                .email(new Email("john.doe@email.com"))
                 .address(anAddress())
                 .build();
     }
@@ -89,7 +90,7 @@ public class OrderTestDataBuilder {
         Order order = Order.draft(customerId);
 
         order.changePaymentMothod(this.paymentMethod);
-        order.changeBillingInfo(this.billingInfo);
+        order.changeBilling(this.billing);
         order.changeShipping(this.shipping);
 
         if (withItems) {
