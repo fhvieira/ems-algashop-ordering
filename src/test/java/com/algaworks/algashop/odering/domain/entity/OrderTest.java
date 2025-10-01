@@ -122,6 +122,60 @@ class OrderTest {
     }
 
     @Test
+    void shouldChangeToReady() {
+        Order order = OrderTestDataBuilder.brandNewBuilder().status(OrderStatus.PAID).build();
+        order.markAsReady();
+        assertThat(order.isReady()).isTrue();
+        assertThat(order.readyAt()).isNotNull();
+    }
+
+    @Test
+    void shouldFailToChangeToReady() {
+        Order order = OrderTestDataBuilder.brandNewBuilder().status(OrderStatus.PLACED).build();
+
+        assertThatExceptionOfType(OrderStatusCannotBeChangedException.class)
+                .isThrownBy(order::markAsReady);
+
+        assertThat(order.isPaid()).isFalse();
+        assertThat(order.paidAt()).isNull();
+    }
+
+    @Test
+    void shouldCancelDraft() {
+        Order order = Order.draft(new CustomerId());
+        order.cancel();
+        assertThat(order.status()).isEqualTo(OrderStatus.CANCELED);
+    }
+
+    @Test
+    void shouldCancelPlaced() {
+        Order order = OrderTestDataBuilder.brandNewBuilder().status(OrderStatus.PLACED).build();
+        order.cancel();
+        assertThat(order.status()).isEqualTo(OrderStatus.CANCELED);
+    }
+
+    @Test
+    void shouldCancelPaid() {
+        Order order = OrderTestDataBuilder.brandNewBuilder().status(OrderStatus.PAID).build();
+        order.cancel();
+        assertThat(order.status()).isEqualTo(OrderStatus.CANCELED);
+    }
+
+    @Test
+    void shouldCancelReady() {
+        Order order = OrderTestDataBuilder.brandNewBuilder().status(OrderStatus.READY).build();
+        order.cancel();
+        assertThat(order.status()).isEqualTo(OrderStatus.CANCELED);
+    }
+
+    @Test
+    void shouldFailToCancel() {
+        Order order = OrderTestDataBuilder.brandNewBuilder().status(OrderStatus.CANCELED).build();
+        assertThatExceptionOfType(OrderStatusCannotBeChangedException.class)
+                .isThrownBy(order::cancel);
+    }
+
+    @Test
     void shouldChangeBilling() {
         Billing billing = OrderTestDataBuilder.aBilling();
         Order order = OrderTestDataBuilder.brandNewBuilder()

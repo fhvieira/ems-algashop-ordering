@@ -17,6 +17,14 @@ public class ProductTestDataBuilder {
                 .inStock(true);
     }
 
+    public static Product.ProductBuilder anAltProduct() {
+        return Product.builder()
+                .id(new ProductId())
+                .name(new ProductName("alternative product name"))
+                .price(new Money("70"))
+                .inStock(true);
+    }
+
     public static Product.ProductBuilder anOutOfStockProduct() {
         return Product.builder()
                 .id(new ProductId())
