@@ -24,4 +24,8 @@ public class ErrorMessages {
     public static final String ORDER_CANNOT_BE_EDITED = "Order cannot be changed. Order id {}, Order status {}";
 
     public static final String PRODUCT_OUT_OF_STOCK = "Product {} is out of stock";
+
+    public static final String SHOPPING_CART_ITEM_DOES_NOT_EXIST = "Shopping cart item {} does not exist for shopping cart {}";
+    public static final String SHOPPING_CART_ITEM_DOES_NOT_EXIST_FOR_PRODUCT_ID = "Shopping cart item {} does not exist for product id {}";
+    public static final String SHOPPING_CART_ITEM_IMCOPATIBLE_PRODUCT = "Shopping cart {} does not have an item with product id {}";
 }

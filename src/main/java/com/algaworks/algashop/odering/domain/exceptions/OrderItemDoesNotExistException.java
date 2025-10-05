@@ -7,7 +7,7 @@ import static com.algaworks.algashop.odering.domain.exceptions.ErrorMessages.ORD
 
 public class OrderItemDoesNotExistException extends DomainException {
 
-    public OrderItemDoesNotExistException(OrderId orderId, OrderItemId orderItemId) {
-        super(String.format(ORDER_ITEM_DOES_NOT_EXIST, orderId, orderItemId));
+    public OrderItemDoesNotExistException(OrderId orderId, OrderItemId itemId) {
+        super(String.format(ORDER_ITEM_DOES_NOT_EXIST, orderId, itemId));
     }
 }
