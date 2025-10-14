@@ -4,6 +4,7 @@ import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.repository.OrderRepository;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderEntityDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepository {
     private final OrderEntityRepository orderEntityRepository;
-    private final OrderEntityAssembler orderEntityAssembler;
+    private final OrderEntityAssembler assembler;
+    private final OrderEntityDisassembler disassembler;
 
     @Override
     public Optional<Order> ofId(OrderId orderId) {
-        OrderEntity entity = orderEntityRepository.findById(orderId.value().toLong()).get();
-        return Optional.empty();
+        Optional<OrderEntity> possibleEntity = orderEntityRepository.findById(orderId.value().toLong());
+        return possibleEntity.map(disassembler::toDomainEntity);
     }
 
     @Override
@@ -30,7 +32,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public void add(Order order) {
-        OrderEntity entity = orderEntityAssembler.fromDomain(order);
+        OrderEntity entity = assembler.fromDomain(order);
         orderEntityRepository.saveAndFlush(entity);
     }
 

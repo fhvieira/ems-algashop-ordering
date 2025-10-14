@@ -4,17 +4,11 @@ import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderEntityAssemblerTest {
-    @Autowired
-    private final OrderEntityAssembler assembler;
-
-    OrderEntityAssemblerTest(OrderEntityAssembler assembler) {
-        this.assembler = assembler;
-    }
+    private final OrderEntityAssembler assembler = new OrderEntityAssembler();
 
     @Test
     void shouldConvertFromDomain() {

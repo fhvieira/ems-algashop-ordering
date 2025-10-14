@@ -5,6 +5,7 @@ import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.OrderRepositoryImpl;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderEntityDisassembler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,7 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import({OrderRepositoryImpl.class, OrderEntityAssembler.class})
+@Import({OrderRepositoryImpl.class, OrderEntityAssembler.class, OrderEntityDisassembler.class})
 class OrderRepositoryIT {
     private OrderRepository orderRepository;
 
