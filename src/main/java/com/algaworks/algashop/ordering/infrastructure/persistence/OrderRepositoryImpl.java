@@ -32,6 +32,22 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public void add(Order order) {
+        orderEntityRepository.findById(order.id().value().toLong()).ifPresentOrElse(
+                (entity) -> {
+                    update(order, entity);
+                },
+                () -> {
+                    insert(order);
+                }
+        );
+    }
+
+    private void update(Order order, OrderEntity entity) {
+        entity = assembler.merge(entity, order);
+        orderEntityRepository.saveAndFlush(entity);
+    }
+
+    private void insert(Order order) {
         OrderEntity entity = assembler.fromDomain(order);
         orderEntityRepository.saveAndFlush(entity);
     }

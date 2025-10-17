@@ -2,6 +2,7 @@ package com.algaworks.algashop.ordering.domain.model.repository;
 
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.valueobject.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.OrderRepositoryImpl;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderEntityAssembler;
@@ -32,5 +33,18 @@ class OrderRepositoryIT {
         orderRepository.add(order);
         Optional<Order> possibleOrder = orderRepository.ofId(orderId);
         assertThat(possibleOrder).isPresent();
+    }
+
+    @Test
+    public void shouldUpdateExistingOrder() {
+        Order order = OrderTestDataBuilder.brandNewBuilder()
+                .status(OrderStatus.PLACED)
+                .build();
+        orderRepository.add(order);
+        order = orderRepository.ofId(order.id()).orElseThrow();
+        order.markAsPaid();
+        orderRepository.add(order);
+        order = orderRepository.ofId(order.id()).orElseThrow();
+        assertThat(order.isPaid()).isTrue();
     }
 }
