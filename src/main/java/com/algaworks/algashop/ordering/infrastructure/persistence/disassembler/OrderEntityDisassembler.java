@@ -27,6 +27,7 @@ public class OrderEntityDisassembler {
                 .canceledAt(entity.getCanceledAt())
                 .readyAt(entity.getReadyAt())
                 .items(new HashSet<>())
+                .version(entity.getVersion())
                 .build();
     }
 }

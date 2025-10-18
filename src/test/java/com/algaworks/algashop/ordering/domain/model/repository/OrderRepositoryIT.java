@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DataJpaTest
 @Import({OrderRepositoryImpl.class, OrderEntityAssembler.class, OrderEntityDisassembler.class})
@@ -46,5 +48,29 @@ class OrderRepositoryIT {
         orderRepository.add(order);
         order = orderRepository.ofId(order.id()).orElseThrow();
         assertThat(order.isPaid()).isTrue();
+    }
+
+    @Test
+    public void shouldNotAllowStaleUpdated() {
+        Order order = OrderTestDataBuilder.brandNewBuilder()
+                .status(OrderStatus.PLACED)
+                .build();
+        orderRepository.add(order);
+
+        Order orderT1 = orderRepository.ofId(order.id()).orElseThrow();
+        Order orderT2 = orderRepository.ofId(order.id()).orElseThrow();
+
+        orderT1.markAsPaid();
+        orderRepository.add(orderT1);
+
+        orderT2.cancel();
+
+        assertThatExceptionOfType(ObjectOptimisticLockingFailureException.class)
+                .isThrownBy(() -> orderRepository.add(orderT2));
+
+        Order savedOrder = orderRepository.ofId(order.id()).orElseThrow();
+
+        assertThat(savedOrder.canceledAt()).isNull();
+        assertThat(savedOrder.paidAt()).isNotNull();
     }
 }
