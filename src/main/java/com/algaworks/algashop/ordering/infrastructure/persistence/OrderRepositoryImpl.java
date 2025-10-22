@@ -9,8 +9,11 @@ import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEn
 import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderEntityRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 @Component
@@ -48,13 +51,21 @@ public class OrderRepositoryImpl implements OrderRepository {
         entity = assembler.merge(entity, order);
         entityManager.detach(entity);
         entity = orderEntityRepository.saveAndFlush(entity);
-        order.setVersion(entity.getVersion());
+        updateVersion(order, entity);
     }
 
     private void insert(Order order) {
         OrderEntity entity = assembler.fromDomain(order);
         orderEntityRepository.saveAndFlush(entity);
-        order.setVersion(entity.getVersion());
+        updateVersion(order, entity);
+    }
+
+    @SneakyThrows
+    private void updateVersion(Order order, OrderEntity entity) {
+        Field version = order.getClass().getDeclaredField("version");
+        version.setAccessible(true);
+        ReflectionUtils.setField(version, order, entity.getVersion());
+        version.setAccessible(false);
     }
 
     @Override
