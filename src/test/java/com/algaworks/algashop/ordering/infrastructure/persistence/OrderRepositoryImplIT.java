@@ -3,11 +3,11 @@ package com.algaworks.algashop.ordering.infrastructure.persistence;
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.OrderStatus;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaEntityAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderEntityDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderJpaEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,16 +18,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Import({
         OrderRepositoryImpl.class,
-        OrderEntityAssembler.class,
-        OrderEntityDisassembler.class,
+        OrderJpaEntityAssembler.class,
+        OrderJpaEntityDisassembler.class,
         SpringDataAuditingConfig.class
 })
 class OrderRepositoryImplIT {
     private OrderRepositoryImpl orderRepository;
-    private OrderEntityRepository entityRepository;
+    private OrderJpaEntityRepository entityRepository;
 
     @Autowired
-    public OrderRepositoryImplIT(OrderRepositoryImpl orderRepository, OrderEntityRepository entityRepository) {
+    public OrderRepositoryImplIT(OrderRepositoryImpl orderRepository, OrderJpaEntityRepository entityRepository) {
         this.orderRepository = orderRepository;
         this.entityRepository = entityRepository;
     }
@@ -40,7 +40,7 @@ class OrderRepositoryImplIT {
         long orderId = order.id().value().toLong();
         orderRepository.add(order);
 
-        OrderEntity entity = entityRepository.findById(orderId).orElseThrow();
+        OrderJpaEntity entity = entityRepository.findById(orderId).orElseThrow();
 
         assertThat(entity.getStatus()).isEqualTo(OrderStatus.PLACED.name());
         assertThat(entity.getCreatedByUserId()).isNotNull();

@@ -1,18 +1,18 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.entity;
 
 import com.algaworks.algashop.ordering.domain.model.utility.IdGenerator;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity.OrderEntityBuilder;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity.OrderJpaEntityBuilder;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-public class OrderEntityTestDataBuilder {
-    private OrderEntityTestDataBuilder() {
+public class OrderJpaEntityTestDataBuilder {
+    private OrderJpaEntityTestDataBuilder() {
 
     }
 
-    public static OrderEntityBuilder existingBuilder() {
-        return OrderEntity.builder()
+    public static OrderJpaEntityBuilder existingBuilder() {
+        return OrderJpaEntity.builder()
                 .id(IdGenerator.generateTSID().toLong())
                 .customerId(IdGenerator.generateTimeBasedUUID())
                 .totalItems(2)

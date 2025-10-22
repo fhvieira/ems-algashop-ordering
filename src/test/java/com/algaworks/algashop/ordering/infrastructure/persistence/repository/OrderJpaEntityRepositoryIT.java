@@ -1,8 +1,8 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.repository;
 
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntityTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntityTestDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -14,31 +14,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(SpringDataAuditingConfig.class)
-class OrderEntityRepositoryIT {
-    private final OrderEntityRepository orderEntityRepository;
+class OrderJpaEntityRepositoryIT {
+    private final OrderJpaEntityRepository orderJpaEntityRepository;
 
     @Autowired
-    public OrderEntityRepositoryIT(OrderEntityRepository orderEntityRepository) {
-        this.orderEntityRepository = orderEntityRepository;
+    public OrderJpaEntityRepositoryIT(OrderJpaEntityRepository orderJpaEntityRepository) {
+        this.orderJpaEntityRepository = orderJpaEntityRepository;
     }
 
     @Test
     void shouldPersist() {
-        OrderEntity entity = OrderEntityTestDataBuilder.existingBuilder().build();
+        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
 
-        orderEntityRepository.saveAndFlush(entity);
-        assertThat(orderEntityRepository.existsById(entity.getId())).isTrue();
+        orderJpaEntityRepository.saveAndFlush(entity);
+        assertThat(orderJpaEntityRepository.existsById(entity.getId())).isTrue();
     }
 
     @Test
     void shouldCount() {
-        assertThat(orderEntityRepository.count()).isZero();
+        assertThat(orderJpaEntityRepository.count()).isZero();
     }
 
     @Test
     void shouldSetAuditingValues() {
-        OrderEntity entity = OrderEntityTestDataBuilder.existingBuilder().build();
-        entity = orderEntityRepository.saveAndFlush(entity);
+        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
+        entity = orderJpaEntityRepository.saveAndFlush(entity);
 
         assertThat(entity.getCreatedByUserId()).isNotNull();
         assertThat(entity.getLastModifiedAt()).isNotNull();

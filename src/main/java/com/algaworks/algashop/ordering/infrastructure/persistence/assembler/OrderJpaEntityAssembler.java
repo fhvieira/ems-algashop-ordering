@@ -1,16 +1,16 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.assembler;
 
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderEntityAssembler {
-    public OrderEntity fromDomain(Order order) {
-        return merge(new OrderEntity(), order);
+public class OrderJpaEntityAssembler {
+    public OrderJpaEntity fromDomain(Order order) {
+        return merge(new OrderJpaEntity(), order);
     }
 
-    public OrderEntity merge(OrderEntity entity, Order order) {
+    public OrderJpaEntity merge(OrderJpaEntity entity, Order order) {
         entity.setId(order.id().value().toLong());
         entity.setCustomerId(order.customerId().value());
         entity.setTotalAmount(order.totalAmount().value());

@@ -7,18 +7,18 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.PaymentMethod;
 import com.algaworks.algashop.ordering.domain.model.valueobject.Quantity;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntityTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntityTestDataBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class OrderEntityDisassemblerTest {
-    private final OrderEntityDisassembler disassembler = new OrderEntityDisassembler();
+class OrderJpaEntityDisassemblerTest {
+    private final OrderJpaEntityDisassembler disassembler = new OrderJpaEntityDisassembler();
 
     @Test
     void shouldConvertFromPersistenceEntity() {
-        OrderEntity entity = OrderEntityTestDataBuilder.existingBuilder().build();
+        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
         Order domainEntity = disassembler.toDomainEntity(entity);
         assertThat(domainEntity).satisfies(
                 d -> assertThat(d.id()).isEqualTo(new OrderId(entity.getId())),

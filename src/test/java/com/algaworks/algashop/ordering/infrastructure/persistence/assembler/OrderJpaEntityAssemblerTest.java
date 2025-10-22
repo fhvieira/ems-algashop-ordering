@@ -2,18 +2,18 @@ package com.algaworks.algashop.ordering.infrastructure.persistence.assembler;
 
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class OrderEntityAssemblerTest {
-    private final OrderEntityAssembler assembler = new OrderEntityAssembler();
+class OrderJpaEntityAssemblerTest {
+    private final OrderJpaEntityAssembler assembler = new OrderJpaEntityAssembler();
 
     @Test
     void shouldConvertFromDomain() {
         Order order = OrderTestDataBuilder.brandNewBuilder().build();
-        OrderEntity entity = assembler.fromDomain(order);
+        OrderJpaEntity entity = assembler.fromDomain(order);
         assertThat(entity).satisfies(
             e -> assertThat(e.getId()).isEqualTo(order.id().value().toLong()),
             e -> assertThat(e.getTotalAmount()).isEqualTo(order.totalAmount().value()),

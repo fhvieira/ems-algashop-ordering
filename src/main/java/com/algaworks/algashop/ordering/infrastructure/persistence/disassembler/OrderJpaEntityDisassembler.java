@@ -7,14 +7,14 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.PaymentMethod;
 import com.algaworks.algashop.ordering.domain.model.valueobject.Quantity;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 
 @Component
-public class OrderEntityDisassembler {
-    public Order toDomainEntity(OrderEntity entity) {
+public class OrderJpaEntityDisassembler {
+    public Order toDomainEntity(OrderJpaEntity entity) {
         return Order.existingBuilder()
                 .id(new OrderId(entity.getId()))
                 .customerId(new CustomerId(entity.getCustomerId()))

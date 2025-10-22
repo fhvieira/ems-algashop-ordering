@@ -21,7 +21,7 @@ import java.util.UUID;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "\"order\"")
 @EntityListeners(AuditingEntityListener.class)
-public class OrderEntity {
+public class OrderJpaEntity {
     @Id
     @EqualsAndHashCode.Include
     private Long id;
