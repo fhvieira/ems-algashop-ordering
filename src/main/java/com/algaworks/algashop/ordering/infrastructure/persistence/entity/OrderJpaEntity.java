@@ -1,5 +1,7 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.entity;
 
+import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.BillingEmbeddable;
+import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.ShippingEmbeddable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -34,7 +36,39 @@ public class OrderJpaEntity {
     private OffsetDateTime paidAt;
     private OffsetDateTime canceledAt;
     private OffsetDateTime readyAt;
-
+    
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "fullName", column = @Column(name = "billing_full_name")),
+        @AttributeOverride(name = "lastName", column = @Column(name = "billing_last_name")),
+        @AttributeOverride(name = "document", column = @Column(name = "billing_document")),
+        @AttributeOverride(name = "phone", column = @Column(name = "billing_phone")),
+        @AttributeOverride(name = "email", column = @Column(name = "billing_email")),
+        @AttributeOverride(name = "address.street", column = @Column(name = "billing_address_street")),
+        @AttributeOverride(name = "address.additionalInfo", column = @Column(name = "billing_address_additional_info")),
+        @AttributeOverride(name = "address.neighborhood", column = @Column(name = "billing_address_neighborhood")),
+        @AttributeOverride(name = "address.city", column = @Column(name = "billing_address_city")),
+        @AttributeOverride(name = "address.state", column = @Column(name = "billing_address_state")),
+        @AttributeOverride(name = "address.zipcode", column = @Column(name = "billing_address_zipcode"))
+    })
+    private BillingEmbeddable billing;
+    
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "cost", column = @Column(name = "shipping_cost")),
+        @AttributeOverride(name = "expectedDate", column = @Column(name = "shipping_expected_date")),
+        @AttributeOverride(name = "recipient.firstName", column = @Column(name = "shipping_recipient_first_name")),
+        @AttributeOverride(name = "recipient.lastName", column = @Column(name = "shipping_recipient_last_name")),
+        @AttributeOverride(name = "recipient.document", column = @Column(name = "shipping_recipient_document")),
+        @AttributeOverride(name = "recipient.phone", column = @Column(name = "shipping_recipient_phone")),
+        @AttributeOverride(name = "address.street", column = @Column(name = "shipping_address_street")),
+        @AttributeOverride(name = "address.additionalInfo", column = @Column(name = "shipping_address_additional_info")),
+        @AttributeOverride(name = "address.neighborhood", column = @Column(name = "shipping_address_neighborhood")),
+        @AttributeOverride(name = "address.city", column = @Column(name = "shipping_address_city")),
+        @AttributeOverride(name = "address.state", column = @Column(name = "shipping_address_state")),
+        @AttributeOverride(name = "address.zipcode", column = @Column(name = "shipping_address_zipcode"))
+    })
+    private ShippingEmbeddable shipping;
     @CreatedBy
     private UUID createdByUserId;
     @LastModifiedDate
