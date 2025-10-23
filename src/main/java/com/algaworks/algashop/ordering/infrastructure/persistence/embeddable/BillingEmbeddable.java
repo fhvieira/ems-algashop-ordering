@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class BillingEmbeddable {
-    private String fullName;
+    private String firstName;
     private String lastName;
     private String document;
     private String phone;

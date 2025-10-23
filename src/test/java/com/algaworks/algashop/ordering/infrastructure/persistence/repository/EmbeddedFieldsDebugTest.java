@@ -34,7 +34,7 @@ class EmbeddedFieldsDebugTest {
         System.out.println("  - Shipping: " + entity.getShipping());
         
         if (entity.getBilling() != null) {
-            System.out.println("  - Billing Full Name: " + entity.getBilling().getFullName());
+            System.out.println("  - Billing Full Name: " + entity.getBilling().getFirstName());
             System.out.println("  - Billing Email: " + entity.getBilling().getEmail());
             System.out.println("  - Billing Address: " + entity.getBilling().getAddress());
         }
@@ -60,7 +60,7 @@ class EmbeddedFieldsDebugTest {
         System.out.println("  - Shipping: " + retrievedEntity.getShipping());
         
         if (retrievedEntity.getBilling() != null) {
-            System.out.println("  - Billing Full Name: " + retrievedEntity.getBilling().getFullName());
+            System.out.println("  - Billing Full Name: " + retrievedEntity.getBilling().getFirstName());
             System.out.println("  - Billing Email: " + retrievedEntity.getBilling().getEmail());
         }
         

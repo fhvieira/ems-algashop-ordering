@@ -31,7 +31,7 @@ public class OrderJpaEntityTestDataBuilder {
 
     private static BillingEmbeddable createBillingEmbeddable() {
         return BillingEmbeddable.builder()
-                .fullName("John")
+                .firstName("John")
                 .lastName("Doe")
                 .document("123456789")
                 .phone("123-456-7890")

@@ -54,7 +54,7 @@ class OrderJpaEntityRepositoryIT {
 
         // Verify billing embedded fields
         assertThat(entity.getBilling()).isNotNull();
-        assertThat(entity.getBilling().getFullName()).isEqualTo("John");
+        assertThat(entity.getBilling().getFirstName()).isEqualTo("John");
         assertThat(entity.getBilling().getLastName()).isEqualTo("Doe");
         assertThat(entity.getBilling().getEmail()).isEqualTo("john.doe@example.com");
         assertThat(entity.getBilling().getAddress()).isNotNull();
@@ -82,7 +82,7 @@ class OrderJpaEntityRepositoryIT {
         
         // Verify billing fields with custom column names
         assertThat(retrievedEntity.getBilling()).isNotNull();
-        assertThat(retrievedEntity.getBilling().getFullName()).isEqualTo("John");
+        assertThat(retrievedEntity.getBilling().getFirstName()).isEqualTo("John");
         assertThat(retrievedEntity.getBilling().getLastName()).isEqualTo("Doe");
         assertThat(retrievedEntity.getBilling().getDocument()).isEqualTo("123456789");
         assertThat(retrievedEntity.getBilling().getPhone()).isEqualTo("123-456-7890");
