@@ -30,6 +30,9 @@ class OrderJpaEntityRepositoryIT {
 
         orderJpaEntityRepository.saveAndFlush(entity);
         assertThat(orderJpaEntityRepository.existsById(entity.getId())).isTrue();
+
+        OrderJpaEntity savedEntity = orderJpaEntityRepository.findById(entity.getId()).orElseThrow();
+        assertThat(savedEntity.getItems()).isNotEmpty();
     }
 
     @Test

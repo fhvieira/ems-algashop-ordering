@@ -10,6 +10,7 @@ import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.Rec
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.LocalDate;
+import java.util.Set;
 
 public class OrderJpaEntityTestDataBuilder {
     private OrderJpaEntityTestDataBuilder() {
@@ -20,13 +21,34 @@ public class OrderJpaEntityTestDataBuilder {
         return OrderJpaEntity.builder()
                 .id(IdGenerator.generateTSID().toLong())
                 .customerId(IdGenerator.generateTimeBasedUUID())
-                .totalItems(2)
-                .totalAmount(new BigDecimal(10))
+                .totalItems(5)
+                .totalAmount(new BigDecimal(700))
                 .status("DRAFT")
                 .paymentMethod("CREDIT_CARD")
                 .placedAt(OffsetDateTime.now())
                 .billing(createBillingEmbeddable())
-                .shipping(createShippingEmbeddable());
+                .shipping(createShippingEmbeddable())
+                .items(Set.of(existingItem().build(), existingItemAlt().build()));
+    }
+
+    public static OrderItemJpaEntity.OrderItemJpaEntityBuilder existingItem() {
+        return OrderItemJpaEntity.builder()
+                .id(IdGenerator.generateTSID().toLong())
+                .productPrice(new BigDecimal(200))
+                .quantity(2)
+                .totalAmount(new BigDecimal(400))
+                .productName("product")
+                .productId(IdGenerator.generateTimeBasedUUID());
+    }
+
+    public static OrderItemJpaEntity.OrderItemJpaEntityBuilder existingItemAlt() {
+        return OrderItemJpaEntity.builder()
+                .id(IdGenerator.generateTSID().toLong())
+                .productPrice(new BigDecimal(100))
+                .quantity(3)
+                .totalAmount(new BigDecimal(300))
+                .productName("other product")
+                .productId(IdGenerator.generateTimeBasedUUID());
     }
 
     private static BillingEmbeddable createBillingEmbeddable() {

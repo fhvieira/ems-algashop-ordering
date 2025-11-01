@@ -11,14 +11,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString(of = "id")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "\"order\"")
@@ -69,12 +69,58 @@ public class OrderJpaEntity {
         @AttributeOverride(name = "address.zipcode", column = @Column(name = "shipping_address_zipcode"))
     })
     private ShippingEmbeddable shipping;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderItemJpaEntity> items = new HashSet<>();
+
     @CreatedBy
     private UUID createdByUserId;
     @LastModifiedDate
     private OffsetDateTime lastModifiedAt;
     @LastModifiedBy
     private UUID lastModifiedByUserId;
+
     @Version
     private Long version;
+
+    @Builder
+    public OrderJpaEntity(Long id, UUID customerId, BigDecimal totalAmount, Integer totalItems, String status, String paymentMethod, OffsetDateTime placedAt, OffsetDateTime paidAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, BillingEmbeddable billing, ShippingEmbeddable shipping, Set<OrderItemJpaEntity> items, UUID createdByUserId, OffsetDateTime lastModifiedAt, UUID lastModifiedByUserId, Long version) {
+        this.id = id;
+        this.customerId = customerId;
+        this.totalAmount = totalAmount;
+        this.totalItems = totalItems;
+        this.status = status;
+        this.paymentMethod = paymentMethod;
+        this.placedAt = placedAt;
+        this.paidAt = paidAt;
+        this.canceledAt = canceledAt;
+        this.readyAt = readyAt;
+        this.billing = billing;
+        this.shipping = shipping;
+        this.replaceItems(items);
+        this.createdByUserId = createdByUserId;
+        this.lastModifiedAt = lastModifiedAt;
+        this.lastModifiedByUserId = lastModifiedByUserId;
+        this.version = version;
+    }
+
+    public void replaceItems(Set<OrderItemJpaEntity> items) {
+        if (items == null || items.isEmpty()) {
+            this.setItems(new HashSet<>());
+            return;
+        }
+        items.forEach(i -> i.setOrder(this));
+        this.setItems(items);
+    }
+
+    public void add(OrderItemJpaEntity item) {
+        if (item == null) {
+            return;
+        }
+        if (this.getItems() == null) {
+            this.setItems(new HashSet<>());
+        }
+        item.setOrder(this);
+        items.add(item);
+    }
 }
