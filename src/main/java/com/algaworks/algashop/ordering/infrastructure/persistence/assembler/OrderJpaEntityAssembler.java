@@ -1,12 +1,19 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.assembler;
 
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
+import com.algaworks.algashop.ordering.domain.model.entity.OrderItem;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.AddressEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.BillingEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.RecipientEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.ShippingEmbeddable;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderItemJpaEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderJpaEntityAssembler {
@@ -28,8 +35,49 @@ public class OrderJpaEntityAssembler {
         entity.setVersion(order.version());
         entity.setBilling(getBilling(order));
         entity.setShipping(getShipping(order));
-
+        Set<OrderItemJpaEntity> mergedItems = mergeItems(order, entity);
+        entity.replaceItems(mergedItems);
         return entity;
+    }
+
+    private Set<OrderItemJpaEntity> mergeItems(Order order, OrderJpaEntity entity) {
+        Set<OrderItem> currentItems = order.items();
+
+        if (currentItems == null || currentItems.isEmpty()) {
+            return new HashSet<>();
+        }
+
+        Set<OrderItemJpaEntity> existingEntityItems = entity.getItems();
+        if (existingEntityItems == null || existingEntityItems.isEmpty()) {
+            return currentItems.stream()
+                            .map(this::fromDomain)
+                            .collect(Collectors.toSet());
+        }
+
+        Map<Long, OrderItemJpaEntity> existingItemsMap = existingEntityItems.stream()
+                .collect(Collectors.toMap(OrderItemJpaEntity::getId, item -> item));
+
+        return currentItems.stream()
+                .map(orderItem -> {
+                    OrderItemJpaEntity entityItem = existingItemsMap.getOrDefault(
+                            orderItem.id().value().toLong(), new OrderItemJpaEntity());
+                    return merge(entityItem, orderItem);
+                })
+                .collect(Collectors.toSet());
+    }
+
+    public OrderItemJpaEntity fromDomain(OrderItem orderItem) {
+        return merge(new OrderItemJpaEntity(), orderItem);
+    }
+
+    private OrderItemJpaEntity merge(OrderItemJpaEntity orderItemJpaEntity, OrderItem orderItem) {
+        orderItemJpaEntity.setId(orderItem.id().value().toLong());
+        orderItemJpaEntity.setProductId(orderItem.productId().value());
+        orderItemJpaEntity.setProductName(orderItem.productName().value());
+        orderItemJpaEntity.setProductPrice(orderItem.price().value());
+        orderItemJpaEntity.setQuantity(orderItem.quantity().value());
+        orderItemJpaEntity.setTotalAmount(orderItem.totalAmount().value());
+        return orderItemJpaEntity;
     }
 
     private BillingEmbeddable getBilling(Order order) {
