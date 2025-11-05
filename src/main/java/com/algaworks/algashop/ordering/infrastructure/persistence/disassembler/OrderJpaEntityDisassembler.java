@@ -1,9 +1,12 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.disassembler;
 
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
+import com.algaworks.algashop.ordering.domain.model.entity.OrderItem;
 import com.algaworks.algashop.ordering.domain.model.valueobject.*;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
+import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderItemId;
+import com.algaworks.algashop.ordering.domain.model.valueobject.id.ProductId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.AddressEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.BillingEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.RecipientEmbeddable;
@@ -11,10 +14,12 @@ import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJp
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderJpaEntityDisassembler {
-    public Order toDomainEntity(OrderJpaEntity entity) {
+    public Order toDomain(OrderJpaEntity entity) {
         return Order.existingBuilder()
                 .id(new OrderId(entity.getId()))
                 .customerId(new CustomerId(entity.getCustomerId()))
@@ -30,7 +35,22 @@ public class OrderJpaEntityDisassembler {
                 .shipping(getShipping(entity))
                 .billing(getBilling(entity))
                 .version(entity.getVersion())
+                .items(getItems(entity))
                 .build();
+    }
+
+    private Set<OrderItem> getItems(OrderJpaEntity entity) {
+        return entity.getItems().stream()
+                .map(entityItem -> OrderItem.existingBuilder()
+                        .id(new OrderItemId(entityItem.getId()))
+                        .orderId(new OrderId(entityItem.orderId()))
+                        .productId(new ProductId(entityItem.getProductId()))
+                        .productName(new ProductName(entityItem.getProductName()))
+                        .productPrice(new Money(entityItem.getProductPrice()))
+                        .quantity(new Quantity(entityItem.getQuantity()))
+                        .totalAmount(new Money(entityItem.getTotalAmount()))
+                        .build())
+                .collect(Collectors.toSet());
     }
 
     private Shipping getShipping(OrderJpaEntity entity) {

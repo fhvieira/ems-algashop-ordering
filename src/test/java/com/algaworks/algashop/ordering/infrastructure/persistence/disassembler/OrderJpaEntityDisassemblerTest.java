@@ -19,7 +19,7 @@ class OrderJpaEntityDisassemblerTest {
     @Test
     void shouldConvertFromPersistenceEntity() {
         OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
-        Order domainEntity = disassembler.toDomainEntity(entity);
+        Order domainEntity = disassembler.toDomain(entity);
         assertThat(domainEntity).satisfies(
                 d -> assertThat(d.id()).isEqualTo(new OrderId(entity.getId())),
                 d -> assertThat(d.customerId()).isEqualTo(new CustomerId(entity.getCustomerId())),
@@ -30,7 +30,8 @@ class OrderJpaEntityDisassemblerTest {
                 d -> assertThat(d.placedAt()).isEqualTo(entity.getPlacedAt()),
                 d -> assertThat(d.readyAt()).isEqualTo(entity.getReadyAt()),
                 d -> assertThat(d.paidAt()).isEqualTo(entity.getPaidAt()),
-                d -> assertThat(d.placedAt()).isEqualTo(entity.getPlacedAt())
+                d -> assertThat(d.placedAt()).isEqualTo(entity.getPlacedAt()),
+                d -> assertThat(d.items()).isNotEmpty()
         );
     }
 
