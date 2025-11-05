@@ -73,4 +73,25 @@ class OrderRepositoryIT {
         assertThat(savedOrder.canceledAt()).isNull();
         assertThat(savedOrder.paidAt()).isNotNull();
     }
+
+    @Test
+    public void shouldCountExistingOrders() {
+        assertThat(orderRepository.count()).isZero();
+
+        Order order1 = OrderTestDataBuilder.brandNewBuilder().build();
+        Order order2 = OrderTestDataBuilder.brandNewBuilder().build();
+
+        orderRepository.add(order1);
+        orderRepository.add(order2);
+
+        assertThat(orderRepository.count()).isEqualTo(2L);
+    }
+
+    @Test
+    public void shouldCheckIfOrderExists() {
+        Order order = OrderTestDataBuilder.brandNewBuilder().build();
+        orderRepository.add(order);
+        assertThat(orderRepository.exists(order.id())).isTrue();
+        assertThat(orderRepository.exists(new OrderId())).isFalse();
+    }
 }
