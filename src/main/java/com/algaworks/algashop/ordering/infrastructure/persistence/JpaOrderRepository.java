@@ -20,7 +20,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class OrderRepositoryImpl implements OrderRepository {
+public class JpaOrderRepository implements OrderRepository {
     private final OrderJpaEntityRepository jpaRepository;
     private final OrderJpaEntityAssembler assembler;
     private final OrderJpaEntityDisassembler disassembler;

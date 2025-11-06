@@ -4,7 +4,7 @@ import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.OrderRepositoryImpl;
+import com.algaworks.algashop.ordering.infrastructure.persistence.JpaOrderRepository;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaEntityAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaEntityDisassembler;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DataJpaTest
-@Import({OrderRepositoryImpl.class, OrderJpaEntityAssembler.class, OrderJpaEntityDisassembler.class})
+@Import({JpaOrderRepository.class, OrderJpaEntityAssembler.class, OrderJpaEntityDisassembler.class})
 class OrderRepositoryIT {
     private OrderRepository orderRepository;
 

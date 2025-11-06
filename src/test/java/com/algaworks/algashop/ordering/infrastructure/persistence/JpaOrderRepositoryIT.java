@@ -20,17 +20,17 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @DataJpaTest
 @Import({
-        OrderRepositoryImpl.class,
+        JpaOrderRepository.class,
         OrderJpaEntityAssembler.class,
         OrderJpaEntityDisassembler.class,
         SpringDataAuditingConfig.class
 })
-class OrderRepositoryImplIT {
-    private OrderRepositoryImpl orderRepository;
+class JpaOrderRepositoryIT {
+    private JpaOrderRepository orderRepository;
     private OrderJpaEntityRepository entityRepository;
 
     @Autowired
-    public OrderRepositoryImplIT(OrderRepositoryImpl orderRepository, OrderJpaEntityRepository entityRepository) {
+    public JpaOrderRepositoryIT(JpaOrderRepository orderRepository, OrderJpaEntityRepository entityRepository) {
         this.orderRepository = orderRepository;
         this.entityRepository = entityRepository;
     }
