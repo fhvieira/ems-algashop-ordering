@@ -16,34 +16,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(SpringDataAuditingConfig.class)
-class OrderJpaEntityRepositoryIT {
-    private final OrderJpaEntityRepository orderJpaEntityRepository;
+class OrderJpaRepositoryIT {
+    private final OrderJpaRepository orderJpaRepository;
 
     @Autowired
-    public OrderJpaEntityRepositoryIT(OrderJpaEntityRepository orderJpaEntityRepository) {
-        this.orderJpaEntityRepository = orderJpaEntityRepository;
+    public OrderJpaRepositoryIT(OrderJpaRepository orderJpaRepository) {
+        this.orderJpaRepository = orderJpaRepository;
     }
 
     @Test
     void shouldPersist() {
         OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
 
-        orderJpaEntityRepository.saveAndFlush(entity);
-        assertThat(orderJpaEntityRepository.existsById(entity.getId())).isTrue();
+        orderJpaRepository.saveAndFlush(entity);
+        assertThat(orderJpaRepository.existsById(entity.getId())).isTrue();
 
-        OrderJpaEntity savedEntity = orderJpaEntityRepository.findById(entity.getId()).orElseThrow();
+        OrderJpaEntity savedEntity = orderJpaRepository.findById(entity.getId()).orElseThrow();
         assertThat(savedEntity.getItems()).isNotEmpty();
     }
 
     @Test
     void shouldCount() {
-        assertThat(orderJpaEntityRepository.count()).isZero();
+        assertThat(orderJpaRepository.count()).isZero();
     }
 
     @Test
     void shouldSetAuditingValues() {
         OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
-        entity = orderJpaEntityRepository.saveAndFlush(entity);
+        entity = orderJpaRepository.saveAndFlush(entity);
 
         assertThat(entity.getCreatedByUserId()).isNotNull();
         assertThat(entity.getLastModifiedAt()).isNotNull();
@@ -53,7 +53,7 @@ class OrderJpaEntityRepositoryIT {
     @Test
     void shouldPersistEmbeddedFields() {
         OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
-        entity = orderJpaEntityRepository.saveAndFlush(entity);
+        entity = orderJpaRepository.saveAndFlush(entity);
 
         // Verify billing embedded fields
         assertThat(entity.getBilling()).isNotNull();
@@ -75,13 +75,13 @@ class OrderJpaEntityRepositoryIT {
     @Test
     void shouldPersistEmbeddedFieldsWithCustomColumnNames() {
         OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
-        entity = orderJpaEntityRepository.saveAndFlush(entity);
+        entity = orderJpaRepository.saveAndFlush(entity);
 
         // Verify that embedded fields are persisted with custom column names
         // This test ensures that @AttributeOverride annotations are working correctly
         
         // Retrieve the entity from database to verify persistence
-        OrderJpaEntity retrievedEntity = orderJpaEntityRepository.findById(entity.getId()).orElseThrow();
+        OrderJpaEntity retrievedEntity = orderJpaRepository.findById(entity.getId()).orElseThrow();
         
         // Verify billing fields with custom column names
         assertThat(retrievedEntity.getBilling()).isNotNull();

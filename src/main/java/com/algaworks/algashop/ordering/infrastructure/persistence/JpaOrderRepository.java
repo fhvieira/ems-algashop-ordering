@@ -3,10 +3,10 @@ package com.algaworks.algashop.ordering.infrastructure.persistence;
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.repository.OrderRepository;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaEntityAssembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaAssembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderJpaEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderJpaRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -21,9 +21,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class JpaOrderRepository implements OrderRepository {
-    private final OrderJpaEntityRepository jpaRepository;
-    private final OrderJpaEntityAssembler assembler;
-    private final OrderJpaEntityDisassembler disassembler;
+    private final OrderJpaRepository jpaRepository;
+    private final OrderJpaAssembler assembler;
+    private final OrderJpaDisassembler disassembler;
     private final EntityManager entityManager;
 
     @Override
@@ -56,13 +56,13 @@ public class JpaOrderRepository implements OrderRepository {
         entity = assembler.merge(entity, order);
         entityManager.detach(entity);
         entity = jpaRepository.saveAndFlush(entity);
-        updateVersion(order, entity);
+//        updateVersion(order, entity);
     }
 
     private void insert(Order order) {
         OrderJpaEntity entity = assembler.fromDomain(order);
         jpaRepository.saveAndFlush(entity);
-        updateVersion(order, entity);
+//        updateVersion(order, entity);
     }
 
     @SneakyThrows

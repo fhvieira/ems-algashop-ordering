@@ -3,11 +3,11 @@ package com.algaworks.algashop.ordering.infrastructure.persistence;
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.OrderStatus;
-import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
-import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaEntityDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderJpaEntityRepository;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,16 +21,16 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 @DataJpaTest
 @Import({
         JpaOrderRepository.class,
-        OrderJpaEntityAssembler.class,
-        OrderJpaEntityDisassembler.class,
+        OrderJpaAssembler.class,
+        OrderJpaDisassembler.class,
         SpringDataAuditingConfig.class
 })
 class JpaOrderRepositoryIT {
     private JpaOrderRepository orderRepository;
-    private OrderJpaEntityRepository entityRepository;
+    private OrderJpaRepository entityRepository;
 
     @Autowired
-    public JpaOrderRepositoryIT(JpaOrderRepository orderRepository, OrderJpaEntityRepository entityRepository) {
+    public JpaOrderRepositoryIT(JpaOrderRepository orderRepository, OrderJpaRepository entityRepository) {
         this.orderRepository = orderRepository;
         this.entityRepository = entityRepository;
     }

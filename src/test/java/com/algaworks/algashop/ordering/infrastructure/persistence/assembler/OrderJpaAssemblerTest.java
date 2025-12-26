@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class OrderJpaEntityAssemblerTest {
-    private final OrderJpaEntityAssembler assembler = new OrderJpaEntityAssembler();
+class OrderJpaAssemblerTest {
+    private final OrderJpaAssembler assembler = new OrderJpaAssembler();
 
     @Test
     void shouldConvertFromDomain() {

@@ -2,9 +2,11 @@ package com.algaworks.algashop.ordering.domain.model.entity;
 
 import com.algaworks.algashop.ordering.domain.model.valueobject.*;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
+import org.assertj.core.data.Offset;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class CustomerTestDataBuilder {
     private CustomerTestDataBuilder() {
@@ -32,8 +34,8 @@ public class CustomerTestDataBuilder {
                 .document(new Document("123-45-6789"))
                 .promotionNotificationsAllowed(true)
                 .archived(false)
-                .registeredAt(Instant.now())
-                .archivedAt(Instant.now())
+                .registeredAt(OffsetDateTime.now())
+                .archivedAt(OffsetDateTime.now())
                 .loyaltyPoints(new LoyaltyPoints(10))
                 .address(anValidNewAddress());
     }
@@ -48,8 +50,8 @@ public class CustomerTestDataBuilder {
                 .document(new Document("000-00-0000"))
                 .promotionNotificationsAllowed(false)
                 .archived(true)
-                .registeredAt(Instant.now())
-                .archivedAt(Instant.now())
+                .registeredAt(OffsetDateTime.now())
+                .archivedAt(OffsetDateTime.now())
                 .loyaltyPoints(LoyaltyPoints.ZERO)
                 .address(anValidNewAddress());
     }

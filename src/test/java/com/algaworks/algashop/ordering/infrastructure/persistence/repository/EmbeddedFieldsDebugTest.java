@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EmbeddedFieldsDebugTest {
     
     @Autowired
-    private OrderJpaEntityRepository orderJpaEntityRepository;
+    private OrderJpaRepository orderJpaRepository;
 
     @Test
     void debugEmbeddedFields() {
@@ -47,12 +47,12 @@ class EmbeddedFieldsDebugTest {
         
         // Save entity
         System.out.println("\nSaving entity...");
-        entity = orderJpaEntityRepository.saveAndFlush(entity);
+        entity = orderJpaRepository.saveAndFlush(entity);
         System.out.println("Entity saved with ID: " + entity.getId());
         
         // Retrieve entity
         System.out.println("\nRetrieving entity...");
-        OrderJpaEntity retrievedEntity = orderJpaEntityRepository.findById(entity.getId()).orElseThrow();
+        OrderJpaEntity retrievedEntity = orderJpaRepository.findById(entity.getId()).orElseThrow();
         
         System.out.println("Retrieved entity:");
         System.out.println("  - ID: " + retrievedEntity.getId());

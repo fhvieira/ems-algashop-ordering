@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class OrderJpaEntityAssembler {
+public class OrderJpaAssembler {
     public OrderJpaEntity fromDomain(Order order) {
         return merge(new OrderJpaEntity(), order);
     }

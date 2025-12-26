@@ -5,7 +5,7 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.*;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import lombok.Builder;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import static com.algaworks.algashop.ordering.domain.model.exceptions.ErrorMessages.*;
@@ -19,16 +19,18 @@ public class Customer implements AggregateRoot<CustomerId>{
     private Document document;
     private Boolean promotionNotificationsAllowed;
     private Boolean archived;
-    private Instant registeredAt;
-    private Instant archivedAt;
+    private OffsetDateTime registeredAt;
+    private OffsetDateTime archivedAt;
     private LoyaltyPoints loyaltyPoints;
     private Address address;
+    private Long version;
 
     @Builder(builderClassName = "BrandNewCustomerBuilder", builderMethodName = "brandNewBuilder")
     private static Customer brandNew(FullName fullName, BirthDate birthDate, Email email, Phone phone, Document document,
                                     Boolean promotionNotificationsAllowed, Address address) {
         return new Customer(
                 new CustomerId(),
+                null,
                 fullName,
                 birthDate,
                 email,
@@ -36,16 +38,16 @@ public class Customer implements AggregateRoot<CustomerId>{
                 document,
                 promotionNotificationsAllowed,
                 false,
-                Instant.now(),
+                OffsetDateTime.now(),
                 null,
                 LoyaltyPoints.ZERO,
                 address);
     }
 
     @Builder(builderClassName = "ExistingCustomerBuilder", builderMethodName = "existingBuilder")
-    private Customer(CustomerId id, FullName fullName, BirthDate birthDate, Email email, Phone phone, Document document,
-                    Boolean promotionNotificationsAllowed, Boolean archived, Instant registeredAt,
-                    Instant archivedAt, LoyaltyPoints loyaltyPoints, Address address) {
+    private Customer(CustomerId id, Long version, FullName fullName, BirthDate birthDate, Email email, Phone phone, Document document,
+                    Boolean promotionNotificationsAllowed, Boolean archived, OffsetDateTime registeredAt,
+                    OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints, Address address) {
         this.setId(id);
         this.setFullName(fullName);
         this.setBirthDate(birthDate);
@@ -58,6 +60,7 @@ public class Customer implements AggregateRoot<CustomerId>{
         this.setArchivedAt(archivedAt);
         this.setLoyaltyPoints(loyaltyPoints);
         this.setAddress(address);
+        this.setVersion(version);
     }
 
     public void addLoyaltyPoints(LoyaltyPoints points) {
@@ -73,7 +76,7 @@ public class Customer implements AggregateRoot<CustomerId>{
         this.setDocument(new Document("000-00-0000"));
         this.setBirthDate(null);
         this.setArchived(true);
-        this.setArchivedAt(Instant.now());
+        this.setArchivedAt(OffsetDateTime.now());
         this.setPromotionNotificationsAllowed(false);
         this.setAddress(this.address().toBuilder()
                         .additionalInfo("anonymous")
@@ -142,11 +145,11 @@ public class Customer implements AggregateRoot<CustomerId>{
         return archived;
     }
 
-    public Instant registeredAt() {
+    public OffsetDateTime registeredAt() {
         return registeredAt;
     }
 
-    public Instant archivedAt() {
+    public OffsetDateTime archivedAt() {
         return archivedAt;
     }
 
@@ -156,6 +159,10 @@ public class Customer implements AggregateRoot<CustomerId>{
 
     public Address address() {
         return address;
+    }
+
+    public Long version() {
+        return version;
     }
 
     private void setId(CustomerId id) {
@@ -198,12 +205,12 @@ public class Customer implements AggregateRoot<CustomerId>{
         this.archived = archived;
     }
 
-    private void setRegisteredAt(Instant registeredAt) {
+    private void setRegisteredAt(OffsetDateTime registeredAt) {
         Objects.requireNonNull(registeredAt);
         this.registeredAt = registeredAt;
     }
 
-    private void setArchivedAt(Instant archivedAt) {
+    private void setArchivedAt(OffsetDateTime archivedAt) {
         this.archivedAt = archivedAt;
     }
 
@@ -221,6 +228,10 @@ public class Customer implements AggregateRoot<CustomerId>{
         if (this.isArchived()) {
             throw new CustomerArchivedException();
         }
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @Override

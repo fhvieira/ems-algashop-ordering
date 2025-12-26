@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class OrderJpaEntityDisassembler {
+public class OrderJpaDisassembler {
     public Order toDomain(OrderJpaEntity entity) {
         return Order.existingBuilder()
                 .id(new OrderId(entity.getId()))

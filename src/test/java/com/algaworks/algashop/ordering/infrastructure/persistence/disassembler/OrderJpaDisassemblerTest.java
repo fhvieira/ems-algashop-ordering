@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class OrderJpaEntityDisassemblerTest {
-    private final OrderJpaEntityDisassembler disassembler = new OrderJpaEntityDisassembler();
+class OrderJpaDisassemblerTest {
+    private final OrderJpaDisassembler disassembler = new OrderJpaDisassembler();
 
     @Test
     void shouldConvertFromPersistenceEntity() {
