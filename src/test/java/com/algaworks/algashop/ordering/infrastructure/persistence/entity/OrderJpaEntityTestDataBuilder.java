@@ -20,7 +20,7 @@ public class OrderJpaEntityTestDataBuilder {
     public static OrderJpaEntityBuilder existingBuilder() {
         return OrderJpaEntity.builder()
                 .id(IdGenerator.generateTSID().toLong())
-                .customerId(IdGenerator.generateTimeBasedUUID())
+                .customer(CustomerJpaEntityTestDataBuilder.aCustomer().build())
                 .totalItems(5)
                 .totalAmount(new BigDecimal(700))
                 .status("DRAFT")

@@ -1,8 +1,12 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.repository;
 
+import com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerJpaEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerJpaEntityTestDataBuilder;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntityTestDataBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -10,23 +14,39 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
+import static com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(SpringDataAuditingConfig.class)
-class OrderJpaRepositoryIT {
+class OrderJpaEntityRepositoryIT {
     private final OrderJpaRepository orderJpaRepository;
+    private final CustomerJpaRepository customerJpaRepository;
+    private CustomerJpaEntity customer;
 
     @Autowired
-    public OrderJpaRepositoryIT(OrderJpaRepository orderJpaRepository) {
+    public OrderJpaEntityRepositoryIT(
+            OrderJpaRepository orderJpaRepository,
+            CustomerJpaRepository customerJpaRepository) {
         this.orderJpaRepository = orderJpaRepository;
+        this.customerJpaRepository = customerJpaRepository;
+    }
+
+    @BeforeEach
+    public void setup() {
+        if (!customerJpaRepository.existsById(DEFAULT_CUSTOMER_ID.value())) {
+            customer = customerJpaRepository.saveAndFlush(CustomerJpaEntityTestDataBuilder.aCustomer().build());
+        }
     }
 
     @Test
     void shouldPersist() {
-        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
+        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder()
+                .customer(customer)
+                .build();
 
         orderJpaRepository.saveAndFlush(entity);
         assertThat(orderJpaRepository.existsById(entity.getId())).isTrue();
@@ -42,7 +62,9 @@ class OrderJpaRepositoryIT {
 
     @Test
     void shouldSetAuditingValues() {
-        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
+        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder()
+                .customer(customer)
+                .build();
         entity = orderJpaRepository.saveAndFlush(entity);
 
         assertThat(entity.getCreatedByUserId()).isNotNull();
@@ -52,7 +74,9 @@ class OrderJpaRepositoryIT {
 
     @Test
     void shouldPersistEmbeddedFields() {
-        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
+        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder()
+                .customer(customer)
+                .build();
         entity = orderJpaRepository.saveAndFlush(entity);
 
         // Verify billing embedded fields
@@ -74,7 +98,9 @@ class OrderJpaRepositoryIT {
 
     @Test
     void shouldPersistEmbeddedFieldsWithCustomColumnNames() {
-        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
+        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder()
+                .customer(customer)
+                .build();
         entity = orderJpaRepository.saveAndFlush(entity);
 
         // Verify that embedded fields are persisted with custom column names

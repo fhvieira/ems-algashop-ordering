@@ -1,13 +1,17 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence;
 
+import com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.OrderStatus;
+import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerJpaDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderJpaRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
@@ -23,16 +28,31 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         JpaOrderRepository.class,
         OrderJpaAssembler.class,
         OrderJpaDisassembler.class,
+        JpaCustomerRepository.class,
+        CustomerJpaAssembler.class,
+        CustomerJpaDisassembler.class,
         SpringDataAuditingConfig.class
 })
 class JpaOrderRepositoryIT {
     private JpaOrderRepository orderRepository;
     private OrderJpaRepository entityRepository;
+    private JpaCustomerRepository customerRepository;
 
     @Autowired
-    public JpaOrderRepositoryIT(JpaOrderRepository orderRepository, OrderJpaRepository entityRepository) {
+    public JpaOrderRepositoryIT(
+            JpaOrderRepository orderRepository,
+            OrderJpaRepository entityRepository,
+            JpaCustomerRepository customerRepository) {
         this.orderRepository = orderRepository;
         this.entityRepository = entityRepository;
+        this.customerRepository = customerRepository;
+    }
+
+    @BeforeEach
+    public void setup() {
+        if (!customerRepository.exists(DEFAULT_CUSTOMER_ID)) {
+            customerRepository.add(CustomerTestDataBuilder.existingCustomerBuilder().build());
+        }
     }
 
     @Test

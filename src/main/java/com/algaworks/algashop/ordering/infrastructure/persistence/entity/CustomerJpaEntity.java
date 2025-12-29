@@ -58,4 +58,29 @@ public class CustomerJpaEntity {
 
     @Version
     private Long version;
+
+    @Builder
+    public CustomerJpaEntity(UUID id, String firstName, String lastName, LocalDate birthDate, String email,
+                             String phone, String document, Boolean promotionNotificationsAllowed, Boolean archived,
+                             OffsetDateTime registeredAt, OffsetDateTime archivedAt, Integer loyaltyPoints,
+                             AddressEmbeddable address, UUID createdByUserId, UUID lastModifiedByUserId,
+                             OffsetDateTime lastModifiedAt, Long version) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.phone = phone;
+        this.document = document;
+        this.promotionNotificationsAllowed = promotionNotificationsAllowed;
+        this.archived = archived;
+        this.registeredAt = registeredAt;
+        this.archivedAt = archivedAt;
+        this.loyaltyPoints = loyaltyPoints;
+        this.address = address;
+        this.createdByUserId = createdByUserId;
+        this.lastModifiedByUserId = lastModifiedByUserId;
+        this.lastModifiedAt = lastModifiedAt;
+        this.version = version;
+    }
 }

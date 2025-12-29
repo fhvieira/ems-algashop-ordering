@@ -3,19 +3,42 @@ package com.algaworks.algashop.ordering.infrastructure.persistence.assembler;
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderItem;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderItemJpaEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntityTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.*;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerJpaRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(MockitoExtension.class)
 class OrderJpaAssemblerTest {
-    private final OrderJpaAssembler assembler = new OrderJpaAssembler();
+    @Mock
+    private CustomerJpaRepository customerJpaRepository;
+
+    @InjectMocks
+    private  OrderJpaAssembler assembler;
+
+    @BeforeEach
+    void setup() {
+        Mockito.when(customerJpaRepository.getReferenceById(Mockito.any(UUID.class)))
+                .then(a -> {
+                    UUID customerId = a.getArgument(0, UUID.class);
+                    return CustomerJpaEntityTestDataBuilder.aCustomer()
+                            .id(customerId)
+                            .build();
+                });
+    }
+
 
     @Test
     void shouldConvertFromDomain() {

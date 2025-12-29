@@ -2,13 +2,13 @@ package com.algaworks.algashop.ordering.domain.model.entity;
 
 import com.algaworks.algashop.ordering.domain.model.valueobject.*;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
-import org.assertj.core.data.Offset;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 public class CustomerTestDataBuilder {
+    public static final CustomerId DEFAULT_CUSTOMER_ID = new CustomerId();
+
     private CustomerTestDataBuilder() {
 
     }
@@ -26,7 +26,7 @@ public class CustomerTestDataBuilder {
 
     public static Customer.ExistingCustomerBuilder existingCustomerBuilder() {
         return Customer.existingBuilder()
-                .id(new CustomerId())
+                .id(DEFAULT_CUSTOMER_ID)
                 .fullName(new FullName("john", "doe"))
                 .birthDate(new BirthDate(LocalDate.of(2000, 1, 1)))
                 .email(new Email("john.doe@email.com"))
@@ -42,7 +42,7 @@ public class CustomerTestDataBuilder {
 
     public static Customer.ExistingCustomerBuilder existingAnonymizedCustomerBuilder() {
         return Customer.existingBuilder()
-                .id(new CustomerId())
+                .id(DEFAULT_CUSTOMER_ID)
                 .fullName(new FullName("anonymous", "anonymous"))
                 .birthDate(new BirthDate(LocalDate.of(2000, 1, 1)))
                 .email(new Email("anonymous@email.com"))

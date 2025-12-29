@@ -1,12 +1,18 @@
 package com.algaworks.algashop.ordering.domain.model.repository;
 
+import com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
+import com.algaworks.algashop.ordering.infrastructure.persistence.JpaCustomerRepository;
 import com.algaworks.algashop.ordering.infrastructure.persistence.JpaOrderRepository;
+import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaAssembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerJpaDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaDisassembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerJpaRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,17 +21,34 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.util.Optional;
 
+import static com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DataJpaTest
-@Import({JpaOrderRepository.class, OrderJpaAssembler.class, OrderJpaDisassembler.class})
+@Import({
+        JpaOrderRepository.class,
+        OrderJpaAssembler.class,
+        OrderJpaDisassembler.class,
+        JpaCustomerRepository.class,
+        CustomerJpaAssembler.class,
+        CustomerJpaDisassembler.class
+})
 class OrderRepositoryIT {
     private OrderRepository orderRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    public OrderRepositoryIT(OrderRepository orderRepository) {
+    public OrderRepositoryIT(OrderRepository orderRepository, CustomerRepository customerRepository) {
         this.orderRepository = orderRepository;
+        this.customerRepository = customerRepository;
+    }
+
+    @BeforeEach
+    public void setup() {
+        if (!customerRepository.exists(DEFAULT_CUSTOMER_ID)) {
+            customerRepository.add(CustomerTestDataBuilder.existingCustomerBuilder().build());
+        }
     }
 
     @Test

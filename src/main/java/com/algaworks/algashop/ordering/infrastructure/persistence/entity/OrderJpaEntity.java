@@ -27,7 +27,6 @@ public class OrderJpaEntity {
     @Id
     @EqualsAndHashCode.Include
     private Long id;
-    private UUID customerId;
     private BigDecimal totalAmount;
     private Integer totalItems;
     private String status;
@@ -70,6 +69,10 @@ public class OrderJpaEntity {
     })
     private ShippingEmbeddable shipping;
 
+    @JoinColumn
+    @ManyToOne(optional = false)
+    private CustomerJpaEntity customer;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItemJpaEntity> items = new HashSet<>();
 
@@ -84,9 +87,13 @@ public class OrderJpaEntity {
     private Long version;
 
     @Builder
-    public OrderJpaEntity(Long id, UUID customerId, BigDecimal totalAmount, Integer totalItems, String status, String paymentMethod, OffsetDateTime placedAt, OffsetDateTime paidAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, BillingEmbeddable billing, ShippingEmbeddable shipping, Set<OrderItemJpaEntity> items, UUID createdByUserId, OffsetDateTime lastModifiedAt, UUID lastModifiedByUserId, Long version) {
+    public OrderJpaEntity(Long id, CustomerJpaEntity customer, BigDecimal totalAmount, Integer totalItems,
+                          String status, String paymentMethod, OffsetDateTime placedAt, OffsetDateTime paidAt,
+                          OffsetDateTime canceledAt, OffsetDateTime readyAt, BillingEmbeddable billing,
+                          ShippingEmbeddable shipping, Set<OrderItemJpaEntity> items, UUID createdByUserId,
+                          OffsetDateTime lastModifiedAt, UUID lastModifiedByUserId, Long version) {
         this.id = id;
-        this.customerId = customerId;
+        this.customer = customer;
         this.totalAmount = totalAmount;
         this.totalItems = totalItems;
         this.status = status;
@@ -122,5 +129,9 @@ public class OrderJpaEntity {
         }
         item.setOrder(this);
         items.add(item);
+    }
+
+    public UUID getCustomerId() {
+        return this.customer == null ? null : this.customer.getId();
     }
 }

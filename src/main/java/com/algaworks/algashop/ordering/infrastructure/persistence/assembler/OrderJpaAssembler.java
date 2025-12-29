@@ -8,6 +8,8 @@ import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.Rec
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.ShippingEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderItemJpaEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerJpaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -16,14 +18,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class OrderJpaAssembler {
+    private final CustomerJpaRepository customerJpaRepository;
+
     public OrderJpaEntity fromDomain(Order order) {
         return merge(new OrderJpaEntity(), order);
     }
 
     public OrderJpaEntity merge(OrderJpaEntity entity, Order order) {
         entity.setId(order.id().value().toLong());
-        entity.setCustomerId(order.customerId().value());
+        entity.setCustomer(customerJpaRepository.getReferenceById(order.customerId().value()));
         entity.setTotalAmount(order.totalAmount().value());
         entity.setTotalItems(order.totalItems().value());
         entity.setStatus(order.status().name());
