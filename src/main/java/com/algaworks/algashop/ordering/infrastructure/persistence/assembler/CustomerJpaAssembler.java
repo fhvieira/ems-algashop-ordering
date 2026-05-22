@@ -3,7 +3,9 @@ package com.algaworks.algashop.ordering.infrastructure.persistence.assembler;
 import com.algaworks.algashop.ordering.domain.model.entity.Customer;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.AddressEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerJpaEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CustomerJpaAssembler {
 
     public CustomerJpaEntity fromDomain(Customer customer) {

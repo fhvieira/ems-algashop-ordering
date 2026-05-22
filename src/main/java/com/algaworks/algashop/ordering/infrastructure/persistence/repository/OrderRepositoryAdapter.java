@@ -1,4 +1,4 @@
-package com.algaworks.algashop.ordering.infrastructure.persistence;
+package com.algaworks.algashop.ordering.infrastructure.persistence.repository;
 
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.repository.OrderRepository;
@@ -6,7 +6,6 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderJpaRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -20,7 +19,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class JpaOrderRepository implements OrderRepository {
+public class OrderRepositoryAdapter implements OrderRepository {
     private final OrderJpaRepository jpaRepository;
     private final OrderJpaAssembler assembler;
     private final OrderJpaDisassembler disassembler;
@@ -28,8 +27,8 @@ public class JpaOrderRepository implements OrderRepository {
 
     @Override
     public Optional<Order> ofId(OrderId orderId) {
-        Optional<OrderJpaEntity> possibleEntity = jpaRepository.findById(orderId.value().toLong());
-        return possibleEntity.map(disassembler::toDomain);
+        return jpaRepository.findById(orderId.value().toLong())
+                .map(disassembler::toDomain);
     }
 
     @Override

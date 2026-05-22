@@ -8,6 +8,7 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.ProductId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.ShoppingCartId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.ShoppingCartItemId;
+import lombok.Builder;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
     private Quantity totalItems;
     private Set<ShoppingCartItem> items;
 
+    @Builder(builderClassName = "ExistingShoppingCartBuilder", builderMethodName = "existing")
     public ShoppingCart(ShoppingCartId id, CustomerId customerId, Money totalAmount, Quantity totalItems,
                         Set<ShoppingCartItem> items) {
         this.setId(id);

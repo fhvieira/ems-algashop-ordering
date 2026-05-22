@@ -1,6 +1,5 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.repository;
 
-import com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder;
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerJpaEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerJpaEntityTestDataBuilder;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import static com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,13 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(SpringDataAuditingConfig.class)
-class OrderJpaEntityRepositoryIT {
+class OrderJpaRepositoryIT {
     private final OrderJpaRepository orderJpaRepository;
     private final CustomerJpaRepository customerJpaRepository;
     private CustomerJpaEntity customer;
 
     @Autowired
-    public OrderJpaEntityRepositoryIT(
+    public OrderJpaRepositoryIT(
             OrderJpaRepository orderJpaRepository,
             CustomerJpaRepository customerJpaRepository) {
         this.orderJpaRepository = orderJpaRepository;

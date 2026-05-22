@@ -1,4 +1,4 @@
-package com.algaworks.algashop.ordering.infrastructure.persistence;
+package com.algaworks.algashop.ordering.infrastructure.persistence.repository;
 
 import com.algaworks.algashop.ordering.domain.model.entity.Customer;
 import com.algaworks.algashop.ordering.domain.model.repository.CustomerRepository;
@@ -6,7 +6,6 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerJpaDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerJpaEntity;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerJpaRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class JpaCustomerRepository implements CustomerRepository {
+public class CustomerRepositoryAdapter implements CustomerRepository {
     private final CustomerJpaRepository jpaRepository;
     private final CustomerJpaAssembler assembler;
     private final CustomerJpaDisassembler disassember;

@@ -7,32 +7,24 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "\"order_item\"")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString(of = "id")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class OrderItemJpaEntity {
+@Table(name = "\"shopping_cart_item\"")
+public class ShoppingCartItemJpaEntity {
     @Id
     @EqualsAndHashCode.Include
-    private Long id;
+    private UUID id;
     private UUID productId;
-    private String productName;
-    private BigDecimal productPrice;
+    private String name;
+    private BigDecimal price;
     private Integer quantity;
     private BigDecimal totalAmount;
+    private Boolean available;
 
     @JoinColumn
     @ManyToOne(optional = false)
-    private OrderJpaEntity order;
-
-    public Long orderId() {
-        if (getOrder() == null) {
-            return null;
-        }
-        return getOrder().getId();
-    }
+    private ShoppingCartJpaEntity shoppingCart;
 }

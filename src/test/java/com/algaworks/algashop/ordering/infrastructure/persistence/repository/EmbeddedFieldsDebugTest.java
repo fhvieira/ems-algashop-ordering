@@ -1,6 +1,8 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.repository;
 
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerJpaEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerJpaEntityTestDataBuilder;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderJpaEntityTestDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -21,12 +23,20 @@ class EmbeddedFieldsDebugTest {
     @Autowired
     private OrderJpaRepository orderJpaRepository;
 
+    @Autowired
+    private CustomerJpaRepository customerJpaRepository;
+
     @Test
     void debugEmbeddedFields() {
         System.out.println("=== DEBUGGING EMBEDDED FIELDS ===");
+
+        CustomerJpaEntity customer = customerJpaRepository.saveAndFlush(
+                CustomerJpaEntityTestDataBuilder.aCustomer().build());
         
         // Create entity with embedded fields
-        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder().build();
+        OrderJpaEntity entity = OrderJpaEntityTestDataBuilder.existingBuilder()
+                .customer(customer)
+                .build();
         
         System.out.println("Entity created:");
         System.out.println("  - ID: " + entity.getId());

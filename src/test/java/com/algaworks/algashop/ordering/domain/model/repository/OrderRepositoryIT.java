@@ -5,13 +5,12 @@ import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.OrderStatus;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.JpaCustomerRepository;
-import com.algaworks.algashop.ordering.infrastructure.persistence.JpaOrderRepository;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerRepositoryAdapter;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderRepositoryAdapter;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.CustomerJpaDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderJpaDisassembler;
-import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +26,16 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DataJpaTest
 @Import({
-        JpaOrderRepository.class,
+        OrderRepositoryAdapter.class,
         OrderJpaAssembler.class,
         OrderJpaDisassembler.class,
-        JpaCustomerRepository.class,
+        CustomerRepositoryAdapter.class,
         CustomerJpaAssembler.class,
         CustomerJpaDisassembler.class
 })
 class OrderRepositoryIT {
-    private OrderRepository orderRepository;
-    private CustomerRepository customerRepository;
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
 
     @Autowired
     public OrderRepositoryIT(OrderRepository orderRepository, CustomerRepository customerRepository) {

@@ -4,6 +4,8 @@ import com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuild
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.OrderStatus;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.CustomerRepositoryAdapter;
+import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderRepositoryAdapter;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderJpaAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
@@ -25,24 +27,24 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @DataJpaTest
 @Import({
-        JpaOrderRepository.class,
+        OrderRepositoryAdapter.class,
         OrderJpaAssembler.class,
         OrderJpaDisassembler.class,
-        JpaCustomerRepository.class,
+        CustomerRepositoryAdapter.class,
         CustomerJpaAssembler.class,
         CustomerJpaDisassembler.class,
         SpringDataAuditingConfig.class
 })
-class JpaOrderRepositoryIT {
-    private JpaOrderRepository orderRepository;
+class OrderRepositoryAdapterIT {
+    private OrderRepositoryAdapter orderRepository;
     private OrderJpaRepository entityRepository;
-    private JpaCustomerRepository customerRepository;
+    private CustomerRepositoryAdapter customerRepository;
 
     @Autowired
-    public JpaOrderRepositoryIT(
-            JpaOrderRepository orderRepository,
+    public OrderRepositoryAdapterIT(
+            OrderRepositoryAdapter orderRepository,
             OrderJpaRepository entityRepository,
-            JpaCustomerRepository customerRepository) {
+            CustomerRepositoryAdapter customerRepository) {
         this.orderRepository = orderRepository;
         this.entityRepository = entityRepository;
         this.customerRepository = customerRepository;
