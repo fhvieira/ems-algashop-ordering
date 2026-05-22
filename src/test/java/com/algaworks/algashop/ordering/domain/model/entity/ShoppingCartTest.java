@@ -98,6 +98,7 @@ class ShoppingCartTest {
         ShoppingCartId shoppingCartId = new ShoppingCartId();
         ShoppingCart cart1 = new ShoppingCart(
                 shoppingCartId,
+                null,
                 new CustomerId(),
                 Money.ZERO,
                 Quantity.ZERO,
@@ -105,6 +106,7 @@ class ShoppingCartTest {
 
         ShoppingCart cart2 = new ShoppingCart(
                 shoppingCartId,
+                null,
                 new CustomerId(),
                 Money.ZERO,
                 Quantity.ZERO,

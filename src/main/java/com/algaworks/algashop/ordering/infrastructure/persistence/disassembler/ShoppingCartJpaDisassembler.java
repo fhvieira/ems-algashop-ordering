@@ -21,6 +21,7 @@ public class ShoppingCartJpaDisassembler {
     public ShoppingCart toDomain(ShoppingCartJpaEntity entity) {
         return ShoppingCart.existing()
                 .id(new ShoppingCartId(entity.getId()))
+                .version(entity.getVersion())
                 .customerId(new CustomerId(entity.getCustomer().getId()))
                 .totalAmount(new Money(entity.getTotalAmount()))
                 .totalItems(new Quantity(entity.getTotalItems()))
@@ -32,7 +33,7 @@ public class ShoppingCartJpaDisassembler {
         return entity.getItems().stream()
                 .map(item -> ShoppingCartItem.existingBuilder()
                         .id(new ShoppingCartItemId(item.getId()))
-                        .shoppingCartId(new ShoppingCartId(item.getId()))
+                        .shoppingCartId(new ShoppingCartId(entity.getId()))
                         .productId(new ProductId(item.getProductId()))
                         .name(new ProductName(item.getName()))
                         .price(new Money(item.getPrice()))

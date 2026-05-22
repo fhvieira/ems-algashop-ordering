@@ -69,7 +69,7 @@ public class ShoppingCartRepositoryAdapter implements ShoppingCartRepository {
 
     @SneakyThrows
     private void updateVersion(ShoppingCart aggregateRoot, ShoppingCartJpaEntity entity) {
-        Field version = aggregateRoot.getClass().getField("version");
+        Field version = aggregateRoot.getClass().getDeclaredField("version");
         version.setAccessible(true);
         ReflectionUtils.setField(version, aggregateRoot, entity.getVersion());
         version.setAccessible(false);

@@ -37,7 +37,7 @@ public class ShoppingCartJpaAssembler {
 
     public ShoppingCartItemJpaEntity mergeItem(ShoppingCartItem cartItem) {
         ShoppingCartItemJpaEntity entityItem =  new ShoppingCartItemJpaEntity();
-        entityItem.setId(cartItem.shoppingCartId().value());
+        entityItem.setId(cartItem.id().value());
         entityItem.setProductId(cartItem.productId().value());
         entityItem.setName(cartItem.name().value());
         entityItem.setPrice(cartItem.price().value());
