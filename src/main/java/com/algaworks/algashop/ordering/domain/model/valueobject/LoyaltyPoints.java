@@ -1,9 +1,11 @@
 package com.algaworks.algashop.ordering.domain.model.valueobject;
 
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public record LoyaltyPoints(Integer value) implements Comparable<LoyaltyPoints>{
     public static final LoyaltyPoints ZERO = new LoyaltyPoints(0);
+    public static final Money AMOUNT_PER_POINT = new Money("1000");
 
     public LoyaltyPoints() {
         this(0);
@@ -26,6 +28,16 @@ public record LoyaltyPoints(Integer value) implements Comparable<LoyaltyPoints>{
             throw new IllegalArgumentException();
         }
         return new LoyaltyPoints(this.value() + loyaltyPoints.value());
+    }
+
+    public static LoyaltyPoints basedOn(Money amount) {
+        Objects.requireNonNull(amount);
+
+        return new LoyaltyPoints(
+                amount.value()
+                .divide(AMOUNT_PER_POINT.value(), RoundingMode.DOWN)
+                .intValue()
+        );
     }
 
     @Override

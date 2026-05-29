@@ -14,6 +14,7 @@ public class OrderTestDataBuilder {
     private Shipping shipping = OrderTestDataBuilder.aShipping();
     private boolean withItems = true;
     private OrderStatus status = OrderStatus.DRAFT;
+    private Money totalAmount;
 
     private OrderTestDataBuilder() {
 
@@ -50,6 +51,11 @@ public class OrderTestDataBuilder {
 
     public OrderTestDataBuilder status(OrderStatus status) {
         this.status = status;
+        return this;
+    }
+
+    public OrderTestDataBuilder totalAmount(Money totalAmount) {
+        this.totalAmount = totalAmount;
         return this;
     }
 
@@ -96,8 +102,14 @@ public class OrderTestDataBuilder {
         order.changeShipping(this.shipping);
 
         if (withItems) {
-            order.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(1));
-            order.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(2));
+            if (this.totalAmount == null) {
+                order.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(1));
+                order.addItem(ProductTestDataBuilder.aProduct().build(), new Quantity(2));
+            } else {
+                order.addItem(ProductTestDataBuilder.aProduct()
+                        .price(this.totalAmount)
+                        .build(), new Quantity(1));
+            }
         }
 
         switch (this.status) {

@@ -53,6 +53,7 @@ public class ShoppingCartJpaEntity {
 
     public void replaceItems(Set<ShoppingCartItemJpaEntity> newItems) {
         if (newItems == null || newItems.isEmpty()) {
+            this.setItems(new HashSet<>());
             return;
         }
 
